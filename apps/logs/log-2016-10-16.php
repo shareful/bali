@@ -1,0 +1,8 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2016-10-16 04:56:14 --> Query error: Column 'code' cannot be null - Invalid query: INSERT INTO `ac_charts_sub` (`company_id`, `code`, `code_sub`, `name`, `created_at`, `created_by`) VALUES ('1', NULL, '100001-01', 'Paty Cash', '2016-10-16 04:56:14', '6')
+ERROR - 2016-10-16 05:00:33 --> Query error: Column 'code' cannot be null - Invalid query: INSERT INTO `ac_charts_sub` (`company_id`, `code`, `code_sub`, `name`, `created_at`, `created_by`) VALUES ('1', NULL, '100001-01', 'Paty Cash', '2016-10-16 05:00:33', '6')
+ERROR - 2016-10-16 05:01:07 --> Query error: Column 'code' cannot be null - Invalid query: INSERT INTO `ac_charts_sub` (`company_id`, `code`, `code_sub`, `name`, `created_at`, `created_by`) VALUES ('1', NULL, '100001-01', 'Paty Cash', '2016-10-16 05:01:07', '6')
+ERROR - 2016-10-16 05:02:21 --> Query error: Column 'code' cannot be null - Invalid query: INSERT INTO `ac_charts_sub` (`company_id`, `code`, `code_sub`, `name`, `created_at`, `created_by`) VALUES ('1', NULL, '100001-01', 'Paty Cash', '2016-10-16 05:02:21', '6')
+ERROR - 2016-10-16 05:03:05 --> Query error: Column 'code' cannot be null - Invalid query: INSERT INTO `ac_charts_sub` (`company_id`, `code`, `code_sub`, `name`, `created_at`, `created_by`) VALUES ('1', NULL, '100001-01', 'Paty Cash', '2016-10-16 05:03:05', '6')
+ERROR - 2016-10-16 05:05:15 --> Query error: Column 'code' cannot be null - Invalid query: INSERT INTO `ac_charts_sub` (`company_id`, `code`, `code_sub`, `name`, `created_at`, `created_by`) VALUES ('1', NULL, '100001-01', 'Paty Cash', '2016-10-16 05:05:15', '6')

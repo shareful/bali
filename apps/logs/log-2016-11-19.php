@@ -1,0 +1,79 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2016-11-19 06:05:20 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:08:36 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:17:33 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:18:09 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:19:44 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:20:38 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:29:17 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:29:51 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:32:09 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:41:11 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 06:41:45 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:07:35 --> Severity: Error --> Call to undefined method MAc_charts::update_sub() C:\xampp\htdocs\acc\apps\controllers\Accounts.php 68
+ERROR - 2016-11-19 07:27:15 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:27:22 --> Severity: Warning --> Missing argument 1 for Accounts::get_chart_subaccount() C:\xampp\htdocs\acc\apps\controllers\Accounts.php 196
+ERROR - 2016-11-19 07:27:22 --> Severity: Notice --> Undefined variable: code C:\xampp\htdocs\acc\apps\controllers\Accounts.php 197
+ERROR - 2016-11-19 07:27:22 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:27:35 --> Severity: Warning --> Missing argument 1 for Accounts::get_chart_subaccount() C:\xampp\htdocs\acc\apps\controllers\Accounts.php 196
+ERROR - 2016-11-19 07:27:35 --> Severity: Notice --> Undefined variable: code C:\xampp\htdocs\acc\apps\controllers\Accounts.php 197
+ERROR - 2016-11-19 07:27:35 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:33:29 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:35:42 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:36:17 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:36:22 --> Severity: Warning --> Missing argument 1 for Accounts::get_chart_subaccount() C:\xampp\htdocs\acc\apps\controllers\Accounts.php 196
+ERROR - 2016-11-19 07:36:22 --> Severity: Notice --> Undefined variable: code C:\xampp\htdocs\acc\apps\controllers\Accounts.php 197
+ERROR - 2016-11-19 07:36:22 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:39:16 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:41:44 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:41:50 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:42:29 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:44:09 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:44:17 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:46:45 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:46:55 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:57:08 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:57:15 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 07:59:07 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 07:59:14 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 08:00:30 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 08:00:38 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 08:04:33 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 08:04:41 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 08:05:35 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 08:05:40 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 08:15:56 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 08:16:01 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 08:17:29 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 08:17:34 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 10:55:35 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 10:55:41 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 10:56:31 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 10:56:36 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 10:57:30 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 10:57:35 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:03:55 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:04:06 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:07:17 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:07:22 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:11:41 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:11:50 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:12:15 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:12:19 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:13:32 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:13:53 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:14:47 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:23:03 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:23:55 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:24:36 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:25:10 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:31:44 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:31:50 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:32:17 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:32:25 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:33:44 --> Severity: Notice --> Undefined variable: debit_amount C:\xampp\htdocs\acc\apps\views\admin\accounts\journal\save.php 153
+ERROR - 2016-11-19 19:33:49 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:34:10 --> Severity: Notice --> Undefined variable: data C:\xampp\htdocs\acc\apps\models\MAc_charts.php 97
+ERROR - 2016-11-19 19:34:26 --> Severity: Notice --> Undefined offset: 1 C:\xampp\htdocs\acc\apps\controllers\Accounts.php 171
+ERROR - 2016-11-19 19:34:26 --> Query error: Column 'code_sub' cannot be null - Invalid query: INSERT INTO `ac_journal_details` (`company_id`, `journal_no`, `chart_id`, `code`, `code_sub`, `debit`, `credit`, `memo`, `created`, `created_by`) VALUES ('1', '20161100033', '50', '100003', NULL, 0, 0, '', '2016-11-19 19:34:26', '6')
