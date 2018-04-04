@@ -25,6 +25,7 @@ class Sale extends My_Controller {
 		$this->load->model('customer_model','customer');		
 		$this->load->model('project_model','project');		
 		$this->load->model('income_model','income');		
+		$this->load->model('salepayment_model','salepayment');		
 	}
 	
 	public function index($project_id, $item_id)
@@ -101,8 +102,15 @@ class Sale extends My_Controller {
 						$this->income->set_value('project_id', $project_id);
 						$this->income->set_value('amount', $received_amount);
 						$this->income->set_value('income_type', 'sale');
-						$this->income->set_value('trans_date', $this->input->post('bill_date'));
+						$this->income->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('bill_date')), 'MYSQL') );
 						$this->income->insert();
+
+						// Insert Payment history
+						$this->salepayment->set_value('bill_id', $new_sale_id);
+						$this->salepayment->set_value('amount', $received_amount);
+						$this->salepayment->set_value('src_type', 'bill');
+						$this->salepayment->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('bill_date')), 'MYSQL') );
+						$this->salepayment->insert();
 					}
 				}
 

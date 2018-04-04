@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This is Income Model
+ * This is Purchasepayment Model
  * 
  * 
  * @package         CodeIgniter
@@ -11,42 +11,36 @@
  * @license         Commercial
  */
 
-class Income_model extends My_Model {
-	protected $_table = 'income';
+class Purchasepayment_model extends My_Model {
+	protected $_table = 'purchase_payments';
 	protected $primary_key = 'id';
 	protected $protected_atributes = array('id');
+	protected $soft_delete = true;
+	protected $soft_delete_key = 'deleted';
 	
 	protected $belongs_to = array(
-			'compnay'=>array(
-				'model'=>'company_model',
-				'primary_key'=>'company_id',
-			),
-			'project'=>array(
-				'model'=>'project_model',
-				'primary_key'=>'project_id',
-			)
+			'purchase'=>array(
+				'model'=>'purchase_model',
+				'primary_key'=>'bill_id',
+			),			
 		);
-
 	
 	/**
 	 * User Table form validation rules
 	 */
 	public $validate = array(
-        array( 'field' => 'code', 
-               'label' => 'Voucher #',
+        array( 'field' => 'bill_id', 
+               'label' => 'Bill',
                'rules' => 'required' ),
-        array( 'field' => 'project_id',
-               'label' => 'Project',
+        array( 'field' => 'trans_date', 
+               'label' => 'Payment Date',
                'rules' => 'required' ),
-        array( 'field' => 'amount',
+        array( 'field' => 'amount', 
                'label' => 'Amount',
-               'rules' => 'required|numeric|greater_than[0]' ),
-        array( 'field' => 'income_type',
-               'label' => 'Income Type',
-               'rules' => 'required|in_list[sale,advance,security,other]|callback_check_income_type' ),
-        array( 'field' => 'trans_date',
-               'label' => 'Trasaction Date',
-               'rules' => 'required' ),
+               'rules' => 'required|numeric|greater_than[0]|callback_check_paid_amount' ),
+        array( 'field' => 'src_type', 
+               'label' => 'Payment source',
+               'rules' => 'required|in_list[bill,advance,security,other]' ),
     );
 	
 	/**
@@ -58,18 +52,18 @@ class Income_model extends My_Model {
 		parent::__construct();
 		// Initializing table fields with null
 		$this->field = new stdClass;
-		$this->field->company_id = $this->session->userdata('company_id');
 		$this->field->id = null;
-		$this->field->code = null;
-		$this->field->project_id = null;
+		$this->field->bill_id = null;
 		$this->field->amount = null;
-		$this->field->income_type = null;
+		$this->field->src_type = null;
 		$this->field->ref_id = null;
-		$this->field->ref_code = null;
-		$this->field->trans_date = null;
 		$this->field->notes = null;
+		$this->field->trans_date = null;
+		$this->field->deleted = 0;
 		$this->field->created = date('Y-m-d H:i:s', time());
-		$this->field->created_by = $this->session->userdata('user_id');		
+		$this->field->created_by = $this->session->userdata('user_id');
+		$this->field->modified = date('Y-m-d H:i:s', time());
+		$this->field->modified_by = $this->session->userdata('user_id');
 	}	
 
 	/**
@@ -136,57 +130,43 @@ class Income_model extends My_Model {
 			// force to skip validation
 			$skip_validation = true;
 		}	
+		$data['modified'] = date('Y-m-d H:i:s', time());
+		$data['modified_by'] = $this->session->userdata('user_id');
 		return parent::update($id, $data, $skip_validation);		
 	}
 
+	public function get_option_list($where = array()){
+		if (!empty($where)) {
+			$this->db->where($where);
+		}
+		
+		$this->db->order_by('id','asc');			
+		$query = $this->db->get($this->_table);
+		return $query->result2($this->primary_key, 'amount');	
+	}	
+
 	/**
-	 * Get all list of income which are in same company and not deleted (soft deleted) 
+	 * Get all list of purchase payments which are not deleted (soft deleted) 
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all(){
+	public function get_list_all($bill_id=null, $advance_id= null, $security_id=null){
 		$where = array();
-		$where['company_id'] = $this->session->userdata('company_id');
-		// $where['deleted'] = 0;
-		$result = parent::order_by('code', 'desc')->get_many_by($where);
+		$where['deleted'] = 0;
+		if ($bill_id) {
+			$where['bill_id'] = $bill_id;
+		}
+		if ($advance_id) {
+			$where['src_type'] = 'advance';
+			$where['ref_id'] = $advance_id;
+		}
+		if ($security_id) {
+			$where['src_type'] = 'security';
+			$where['ref_id'] = $security_id;
+		}
+
+		$result = parent::with('purchase')->order_by('id', 'desc')->get_many_by($where);
 		return $result;
 	}
 
-	/**
-	 * Get last created project to get the code.
-	 * @access public
-	 * @return array
-	 */
-	public function get_latest()
-    {
-    	$where = array();
-		$where['company_id'] = $this->session->userdata('company_id');
-		$data = parent::order_by('code', 'DESC')->get_by($where);		
-		return $data;        
-    }
-
-    /**
-	 * Get voucher code for new entry.
-	 * @access public
-	 * @return array
-	 */
-    public function get_new_code(){
-    	$voucher = $this->get_latest();
-		$voucher_code = '';
-        if (count($voucher) > 0)
-        {
-        	// remove leading zero
-        	$voucher_code = ltrim($voucher->code, '0');
-        	// increment by 1
-            $voucher_code = $voucher_code + 1;
-            // add leading zero
-            $voucher_code = str_pad($voucher_code, 6, '0', STR_PAD_LEFT);
-        }
-        else
-        {
-        	$voucher_code = '100001';
-        }
-
-        return $voucher_code;
-    }
 }

@@ -59,6 +59,7 @@
 											<td><?php echo $bill->security_perc; ?></td>
 											<td>
 												<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Make </a>
+												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="payment/p_ledger/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Payments </a>
 											</td>
 										</tr>
 										<?php 
@@ -74,7 +75,7 @@
 			</div>
 		</article>
 	</div>
-</section>					
+</section>
 
 <!-- Dynamic Modal -->  
 <div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">  

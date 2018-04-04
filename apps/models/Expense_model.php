@@ -43,7 +43,7 @@ class Expense_model extends My_Model {
                'rules' => 'required|numeric|greater_than[0]' ),
         array( 'field' => 'exp_type',
                'label' => 'Expense Type',
-               'rules' => 'required|in_list[purchase,advance,other]|callback_check_exp_type' ),
+               'rules' => 'required|in_list[purchase,advance,security,other]|callback_check_exp_type' ),
         array( 'field' => 'trans_date',
                'label' => 'Trasaction Date',
                'rules' => 'required' ),

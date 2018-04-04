@@ -19,7 +19,7 @@ class Sale_model extends My_Model {
 	protected $soft_delete_key = 'deleted';
 	
 	protected $belongs_to = array(
-			'compnay'=>array(
+			'company'=>array(
 				'model'=>'company_model',
 				'primary_key'=>'company_id',
 			),

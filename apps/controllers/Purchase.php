@@ -24,6 +24,7 @@ class Purchase extends My_Controller {
 		$this->load->model('supplier_model','supplier');		
 		$this->load->model('project_model','project');		
 		$this->load->model('expense_model','expense');		
+		$this->load->model('purchasepayment_model','purchasepayment');		
 	}
 	
 	public function index($project_id, $item_id)
@@ -100,8 +101,15 @@ class Purchase extends My_Controller {
 						$this->expense->set_value('project_id', $project_id);
 						$this->expense->set_value('amount', $paid_amount);
 						$this->expense->set_value('exp_type', 'purchase');
-						$this->expense->set_value('trans_date', $this->input->post('bill_date'));
+						$this->expense->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('bill_date')), 'MYSQL') );
 						$this->expense->insert();
+
+						// Insert Payment history
+						$this->purchasepayment->set_value('bill_id', $new_purchase_id);
+						$this->purchasepayment->set_value('amount', $paid_amount);
+						$this->purchasepayment->set_value('src_type', 'bill');
+						$this->purchasepayment->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('bill_date')), 'MYSQL') );
+						$this->purchasepayment->insert();
 					}
 				}
 

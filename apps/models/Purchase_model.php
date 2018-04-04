@@ -19,7 +19,7 @@ class Purchase_model extends My_Model {
 	protected $soft_delete_key = 'deleted';
 	
 	protected $belongs_to = array(
-			'compnay'=>array(
+			'company'=>array(
 				'model'=>'company_model',
 				'primary_key'=>'company_id',
 			),
@@ -241,7 +241,8 @@ class Purchase_model extends My_Model {
 		$where['id'] = $bill_id;
 		$data = parent::with('project')->with('supplier')->with('item')->get_by($where);
 		if (!empty($data)) {
-			$data->invoice_no = $data->project->code.'-'.$data->supplier->code.'-'.$data->item->code.'-'.$data->code;	
+			$data->invoice_no = $data->project->code.'-'.$data->supplier->code.'-'.$data->item->code.'-'.$data->code;
+			$data->due_amount = number_format(($data->total_amount - $data->paid_amount), 2, '.', '');
 		}
 		return $data;        
     }
