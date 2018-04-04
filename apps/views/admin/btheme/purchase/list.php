@@ -33,6 +33,7 @@
 											<th data-class="expand">SN</th>
 											<th data-class="expand">Bill #</th>
 											<th data-class="expand">Bill Date</th>
+											<th data-class="expand">Ref #</th>
 											<th data-class="expand">Supplier</th>
 											<th data-class="expand">Total Amt (tk)</th>
 											<th data-class="expand">Paid Amt (tk)</th>
@@ -48,15 +49,16 @@
 										foreach ($bills as $bill) { ?>
 										<tr id="row-purchases-<?php echo $bill->id;?>">
 											<td><?php echo $c; ?></td>
-											<td><?php echo $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.$bill->code; ?></td>
+											<td><a href="purchase/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.$bill->code; ?></a></td>
 											<td><?php echo date("m/d/Y", strtotime($bill->bill_date)); ?></td>
+											<td><?php echo $bill->ref_no; ?></td>
 											<td><?php echo $bill->supplier->name; ?></td>
 											<td><?php echo $bill->total_amount; ?></td>
 											<td><?php echo $bill->paid_amount; ?></td>
 											<td><?php echo ($bill->total_amount - $bill->paid_amount); ?></td>
 											<td><?php echo $bill->security_perc; ?></td>
 											<td>
-												<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Make Payment</a>
+												<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Make </a>
 											</td>
 										</tr>
 										<?php 

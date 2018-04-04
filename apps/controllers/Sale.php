@@ -109,7 +109,7 @@ class Sale extends My_Controller {
 				$this->db->trans_complete();
 
 				if($this->db->trans_status() === TRUE AND $new_sale_id){
-					echo json_encode(array('success'=>'true','error'=>"Sale Bill has been created.")); exit;
+					echo json_encode(array('success'=>'true','msg'=>"Sale Bill has been created.", 'id'=>$new_sale_id)); exit;
 				} else {
 					echo json_encode(array('success'=>'false','error'=>"Bill can't be created. Try again or contact with administrator.")); exit;	
 				}
@@ -137,8 +137,21 @@ class Sale extends My_Controller {
 	}
 
 	/**
+	 * Print Sale Bill
+	 * @access public
+	 * @param integer
+	 */
+	public function bill_print($id){
+		$data['bill'] = $this->sale->get_one($id);
+
+		// echo "<pre>"; print_r($data); exit();
+        $data['content'] = $this->config->item('admin_theme').'/sale/bill_print';
+        $this->load->view($this->config->item('admin_theme').'/rprint_template', $data);
+	}
+
+	/**
 	 * Verify received amount form validation callback
-	 * @access private
+	 * @access public
 	 * @param double
 	 * @return bolean
 	 */

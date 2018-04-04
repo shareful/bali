@@ -48,7 +48,7 @@
 										foreach ($bills as $bill) { ?>
 										<tr id="row-sales-<?php echo $bill->id;?>">
 											<td><?php echo $c; ?></td>
-											<td><?php echo $bill->project->code.'-'.$bill->customer->code.'-'.$bill->item->code.'-'.$bill->code; ?></td>
+											<td><a href="sale/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->customer->code.'-'.$bill->item->code.'-'.$bill->code; ?></a></td>
 											<td><?php echo date("m/d/Y", strtotime($bill->bill_date)); ?></td>
 											<td><?php echo $bill->customer->name; ?></td>
 											<td><?php echo $bill->total_amount; ?></td>
@@ -56,7 +56,7 @@
 											<td><?php echo ($bill->total_amount - $bill->received_amount); ?></td>
 											<td><?php echo $bill->security_perc; ?></td>
 											<td>
-												<a class="btn btn-edit" href="#payment/receive/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Receive Payment</a>
+												<a class="btn btn-edit" href="#payment/receive/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Receive </a>
 											</td>
 										</tr>
 										<?php 

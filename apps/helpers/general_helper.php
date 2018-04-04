@@ -67,12 +67,22 @@ function custom_standard_date($time = '', $fmt = 'USA_DATE')
   return mdate($formats[$fmt], $time);
 }
 
-function currency_format($amount, $currency=null, $round=2){
+function currency_format($amount, $include_symbol = true){
   $CI =& get_instance();
-  if (is_null($currency)) {
-    $currency = $CI->config->item('currency');
+
+  $str = '';
+
+  if ($include_symbol AND $CI->session->userdata('currency_symbol_position') == 'Before') {
+   $str .= $CI->session->userdata('currency_symbol').' '; 
+  } 
+  
+  $str .= number_format($amount, 2); 
+
+  if ($include_symbol AND $CI->session->userdata('currency_symbol_position') == 'After') { 
+    $str .= ' '.$CI->session->userdata('currency_symbol'); 
   }
-  return round($amount, 2).' '.$currency;
+
+  return $str;
 }
 
 function mythumb($name) {

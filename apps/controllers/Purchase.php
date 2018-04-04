@@ -108,7 +108,7 @@ class Purchase extends My_Controller {
 				$this->db->trans_complete();
 
 				if($this->db->trans_status() === TRUE AND $new_purchase_id){
-					echo json_encode(array('success'=>'true','error'=>"Purchase Bill has been created.")); exit;
+					echo json_encode(array('success'=>'true','msg'=>"Purchase Bill has been created.", 'id'=>$new_purchase_id)); exit;
 				} else {
 					echo json_encode(array('success'=>'false','error'=>"Bill can't be created. Try again or contact with administrator.")); exit;	
 				}
@@ -118,7 +118,7 @@ class Purchase extends My_Controller {
 			$data['items'] = $this->item->get_list_all();
 			$data['suppliers'] = $this->supplier->get_list_all();
 			$data['projects'] = $this->project->get_list_all();
-			$data['item'] = $this->itemstock->get_item($item_id, $project_id);
+			$data['itemstock'] = $this->itemstock->get_item($item_id, $project_id);
 
 			$data['project_id'] = $project_id;
 			$data['supplier_id'] = '';
@@ -131,6 +131,18 @@ class Purchase extends My_Controller {
 	        $data['content'] = $this->config->item('admin_theme').'/purchase/new_bill';
 	        $this->load->view($this->config->item('admin_theme').'/template', $data);
 		}
+	}
+
+	/**
+	 * Print Purchase Bill
+	 * @access public
+	 * @param integer
+	 */
+	public function bill_print($id){
+		$data['bill'] = $this->purchase->get_one($id);
+
+        $data['content'] = $this->config->item('admin_theme').'/purchase/bill_print';
+        $this->load->view($this->config->item('admin_theme').'/rprint_template', $data);
 	}
 
 	/**

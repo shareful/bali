@@ -43,7 +43,7 @@ class Sale_model extends My_Model {
 	 */
 	public $validate = array(
         array( 'field' => 'customer_id', 
-               'label' => 'Supplier',
+               'label' => 'Customer',
                'rules' => 'required' ),
         array( 'field' => 'project_id', 
                'label' => 'Project',
@@ -226,6 +226,23 @@ class Sale_model extends My_Model {
 		$where['customer_id'] = $customer_id;
 		$where['item_id'] = $item_id;
 		$data = parent::with('project')->with('customer')->with('item')->order_by('code', 'DESC')->get_by($where);		
+		return $data;        
+    }
+
+    /**
+	 * Get last created item to get the code.
+	 * @access public
+	 * @return array
+	 */
+	public function get_one($bill_id)
+    {
+    	$where = array();
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['id'] = $bill_id;
+		$data = parent::with('project')->with('customer')->with('item')->get_by($where);
+		if (!empty($data)) {
+			$data->invoice_no = $data->project->code.'-'.$data->customer->code.'-'.$data->item->code.'-'.$data->code;	
+		}
 		return $data;        
     }
 

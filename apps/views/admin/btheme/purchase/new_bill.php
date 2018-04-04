@@ -117,11 +117,11 @@
 									</section>
 									<section class="col col-3">	
 										<label class="input">											
-											<input type="text" style="text-align: right;" name="stockbalance" class="span5" id="stockbalance" value="<?php echo isset($item->stock) ? $item->stock : 0 ;?>" readonly />
+											<input type="text" style="text-align: right;" name="stockbalance" class="span5" id="stockbalance" value="<?php echo isset($itemstock->stock) ? $itemstock->stock : 0 ;?>" readonly />
 										</label>
 									</section>
 									<section class="col col-1">
-										<label class="control-label" id="unit_name"><?php echo isset($item->unit_name) ? $item->unit_name : '' ;?></label>
+										<label class="control-label" id="unit_name"><?php echo isset($itemstock->unit_name) ? $itemstock->unit_name : '' ;?></label>
 									</section>
 								</div>
 
@@ -419,6 +419,7 @@
 							number : ""
 						});
 						$("form#frmpurchasebill").trigger("reset");
+						window.open('purchase/bill_print/'+data.id, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=1020,height=780');
 						location.hash = 'purchase/index/'+project_id+'/'+item_id;
 					} else if(data.error != ""){
 						$.bigBox({

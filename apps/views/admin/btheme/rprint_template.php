@@ -1,108 +1,73 @@
+<?php
+    $theme = $this->config->item('theme');
+    $company_name = $this->config->item('company_name');
+?>
 <!DOCTYPE html>
-<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
 <head>
-    <base href="<?php echo base_url(); ?>" />
-    <meta charset="utf-8">
-    <title><?php echo $title ?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Tapan Kumer Das : InnovativeBD">
-    <link rel="shortcut icon" href="assets/backend/img/favicon.ico" type="image/x-icon" />
+<base href="<?php echo base_url(); ?>" />
+<meta charset="utf-8" />
+<title><?php echo isset($title) ? $title : ''; ?></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="Shareful Islam<km.shareful@gmail.com>" />
 
-    <!-- styles -->
-    <link href="assets/backend/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/backend/css/stilearn.css" rel="stylesheet" />
-    <style>
-        #footer {
-			width: 100%;
-            color: #757575;
-            font-size: 12px;
-			line-height: 15px;
-			border-top: 1px solid #eee;
-			padding: 5px 0px 10px 0px;
-			margin-top: 10px;
-        }
+<link href="assets/invoice/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="assets/invoice/assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link href="assets/invoice/assets/bootstrap/css/bootstrap-fileupload.css" rel="stylesheet" />
 
-        .container-fluid{
-            padding-left: 0;
-            padding-right: 0;
-        }
-		
-		.content {
-			border: 0px solid #fff;
-			background-color: #fff;
-		}
+<link href="assets/invoice/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link href="assets/invoice/css/style.css" rel="stylesheet" />
+<link href="assets/invoice/css/style-default.css" rel="stylesheet" id="style_color" />
+<link href="assets/invoice/css/print.css" rel="stylesheet">
 
-        .content > .content-body {
-            padding: 5px 5px 0px 5px;
-        }
-        
-        @media print{
-            p.muted{
-                font-weight: bold;
-            }
-            small.small{
-              font-weight: normal;
-            }
-            #labtest-order-invoice .control-group, legend{
-                margin-bottom: 0;
-            }    
-            .form-horizontal .control-label{
-                text-align: left;
-            }
-            .print-wrap{
-                display: none;
-            }
-        }
-    </style>
 </head>
+<!-- END HEAD -->
 
+<!-- BEGIN BODY -->
 <body>
-    <!-- section content -->
-    <section class="section">
-        <div class="container">
-            <!-- span content -->
+    <!-- BEGIN CONTAINER -->
+    <div id="container" class="row-fluid">
+        <!-- BEGIN PAGE -->
+        <div class="row-fluid">
             <div class="span12">
-                <!-- content -->
-                <div class="content">
-                    <!-- content-body -->
-                    <div class="content-body">
-                        <!-- invoice -->
-                        <div id="invoice-container" class="invoice-container">
-                            <div class="page-header" style="padding-bottom: 0px;overflow: hidden;">
+                <!-- BEGIN BLANK PAGE PORTLET-->
+                <div class="widget grey">
+                    <div class="widget-body">
+                        <div class="row-fluid">
+                            <div class="span12">
                                 <div class="pull-right">
-                                    <div class="row-fluid print-wrap">
-										<a class="btn btn-large hidden-print" onclick="javascript:window.print();">Print <i class="icon-print icon-big"></i></a>
-									</div>
+                                    <img src="<?php echo $this->session->userdata('company_logo'); ?>" width="115" class="img">
                                 </div>
-                                <div class="left">
-                                    <div class="left" style="margin-right: 10px;width: 115px; float: left; height: 80px;"><img src="<?php echo $this->session->userdata('company_logo'); ?>" width="115" class="img left" /></div>
-                                    <h3 class="left" style="margin: 0px;"><?php echo $this->session->userdata('company_name'); ?></h3>
-                                    <p style="margin: 0px;">South Banasree, Khilgaon,<br>Dhaka-1219<br>Mobile: 01872224455</p>
-                                </div>
+                                <h3 class="left"><?php echo $this->session->userdata('company_name'); ?></h3>
+                                <hr>
                             </div>
-                            
-                            <!-- BEGIN CONTAINER -->
-                            <div id="container" class="row-fluid">
-                                <?php $this->load->view($content); ?>
-                            </div>
-                            <!-- END CONTAINER -->
+                        </div>
+                        <div class="space20"></div>
 
-                             <!-- BEGIN FOOTER -->
-                            <div id="footer" class="row-fluid" style="margin-bottom: 0px; margin-top: 15px; padding: 2px;">
-                                <div style="color: #333333;font-size: 12px;" class="pull-right">Print Date: <?php echo date('m/d/Y g:i a'); ?></div>
-                                <div style="color: #333333;font-size: 12px;" class="left">Powered by: <b>Bisorgo Technology</b></div>
-                            </div>
-                            <!-- END FOOTER -->
-                           
+                        <?php $this->load->view($content); ?>
+                        <div class="row-fluid" style="text-align: center;">THANK YOU FOR YOUR BUSINESS!</div>
+                        <div class="space20"></div>
+                        <div class="row-fluid text-center">
+                            <a class="btn btn-inverse btn-large hidden-print" onclick="javascript:window.print();">Print <i class="icon-print icon-big"></i></a>
                         </div>
                     </div>
-                    <!--/invoice-->
-                </div><!--/content-body -->
-            </div><!-- /content -->
-        </div><!-- /span content -->
-    </div><!-- /container -->
-</section>
+                </div>
+                <!-- END BLANK PAGE PORTLET-->
+            </div>
+        </div>
+        <!-- END PAGE -->
+    </div>
+    <!-- END CONTAINER -->
+
+    <div id="footer">
+        Print Date: <?php echo date('m/d/Y g:i a', now()); ?><br>
+        <?php echo date('Y'); ?> &copy; Powered by <a href="http://bisorgo.com/" target="_blank">Bisorgo Technology</a>
+    </div>        
 
 </body>
+<!-- END BODY -->
 </html>

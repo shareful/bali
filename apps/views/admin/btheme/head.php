@@ -3,9 +3,9 @@
 	$company_name = $this->config->item('company_name');
 ?>
 <meta charset="utf-8">
-<title><?php echo $title; ?></title>
+<title><?php echo isset($title) ? $title : ''; ?></title>
 <meta name="description" content="">
-<meta name="author" content="BISORGO">
+<meta name="author" content="Shareful Islam<km.shareful@gmail.com>" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 

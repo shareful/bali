@@ -143,7 +143,7 @@
 											<?php
 											$stock = isset($itemstock->stock) ? $itemstock->stock : 0;
 											$billed = isset($itembilled->billed) ? $itembilled->billed : 0;
-											$available_to_bill = $stock - $billed;
+											$available_to_bill = number_format($stock - $billed, 2, '.', '');
 											?>									
 											<input type="text" style="text-align: right;" name="availbletobill" class="span5" id="availbletobill" value="<?php echo $available_to_bill ;?>" readonly />
 										</label>
@@ -319,7 +319,7 @@
 				if (data.success == 'true') {
 					$('#stockbalance').val(data.info.stock);
 					$('#stockbilledbalance').val(data.info.billed);
-					$('#availbletobill').val(data.info.stock - data.info.billed);
+					$('#availbletobill').val((data.info.stock - data.info.billed).toFixed(2));
 					$('.unit_name').html(data.info.unit_name);		
 					// $('#unit_name_billed').html(data.info.unit_name);		
 					
@@ -327,7 +327,7 @@
 					// item_list[data.info.item_id] = data.info;
 
 					if (data.info.billed < data.info.stock) {
-						var can_bill = data.info.stock - data.info.billed;
+						var can_bill = (data.info.stock - data.info.billed).toFixed(2);
 						$.bigBox({
 							title : "Quantity you can bill",
 							content : can_bill+' '+data.info.unit_name+' is pending to bill.',
@@ -469,6 +469,7 @@
 							number : ""
 						});
 						$("form#frmsalebill").trigger("reset");
+						window.open('sale/bill_print/'+data.id, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=1020,height=780');
 						location.hash = 'sale/index/'+project_id+'/'+item_id;
 					} else if(data.error != ""){
 						$.bigBox({

@@ -230,6 +230,23 @@ class Purchase_model extends My_Model {
     }
 
     /**
+	 * Get last created item to get the code.
+	 * @access public
+	 * @return array
+	 */
+	public function get_one($bill_id)
+    {
+    	$where = array();
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['id'] = $bill_id;
+		$data = parent::with('project')->with('supplier')->with('item')->get_by($where);
+		if (!empty($data)) {
+			$data->invoice_no = $data->project->code.'-'.$data->supplier->code.'-'.$data->item->code.'-'.$data->code;	
+		}
+		return $data;        
+    }
+
+    /**
 	 * Get voucher code for new entry.
 	 * @access public
 	 * @return array

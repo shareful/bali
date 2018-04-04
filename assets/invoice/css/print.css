@@ -1,0 +1,15 @@
+@media print{
+    body{
+        background: none;
+        color: #000;
+    }
+    #header,.sidebar-scroll,.form-actions,.brand,.top-nav {
+        display: none;
+    }
+    #container{
+        margin-top: 10px;
+    }
+    #main-content{
+        margin-left: 10px;
+    }
+}

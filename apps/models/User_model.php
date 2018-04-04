@@ -221,10 +221,18 @@ class User_model extends My_Model {
 			// {
 			// 	$data['company_logo'] = 'assets/'.$this->config->item('theme').'/img/logo.png';
 			// }
-			// $data['currency_symbol_position'] = $company['currency_symbol_position'];
-			// $currency = $this->MCurrencies->get_by_id($company['currency_id']);
-			// $data['currency_name'] = $currency['shortname'];
-			// $data['currency_symbol'] = $currency['symbol'];
+			// $data['currency_symbol_position'] = $user->company->currency_symbol_position;
+
+			// $CI =& get_instance();
+			// $CI->load->model('currency_model', 'currency');
+
+			// $currency = $this->currency->get($user->company->->currency_id);
+			// $data['currency_name'] = $currency->shortname;
+			// $data['currency_symbol'] = $currency->symbol;
+
+			$data['currency_symbol_position'] = $user->company->currency_symbol_position;
+			$data['currency_name'] = 'BDT';
+			$data['currency_symbol'] = 'Tk';
 
 			$this->session->set_userdata($data);
 			return true;
