@@ -106,7 +106,6 @@ class Sale_model extends My_Model {
 		$this->field->total_amount = 0;
 		$this->field->receivable_amount = 0;
 		$this->field->received_amount = 0;
-		$this->field->advance_id = 0;
 		$this->field->deleted = 0;
 		$this->field->created = date('Y-m-d H:i:s', time());
 		$this->field->created_by = $this->session->userdata('user_id');
@@ -240,8 +239,10 @@ class Sale_model extends My_Model {
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['id'] = $bill_id;
 		$data = parent::with('project')->with('customer')->with('item')->get_by($where);
+		
 		if (!empty($data)) {
 			$data->invoice_no = $data->project->code.'-'.$data->customer->code.'-'.$data->item->code.'-'.$data->code;	
+			$data->due_amount = number_format(($data->total_amount - $data->received_amount), 2, '.', '');
 		}
 		return $data;        
     }

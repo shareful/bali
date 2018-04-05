@@ -37,7 +37,7 @@ class Salepayment_model extends My_Model {
                'rules' => 'required' ),
         array( 'field' => 'amount', 
                'label' => 'Amount',
-               'rules' => 'required|numeric|greater_than[0]' ),
+               'rules' => 'required|numeric|greater_than[0]|callback_check_received_amount' ),
         array( 'field' => 'src_type', 
                'label' => 'Payment source',
                'rules' => 'required|in_list[bill,advance,security,other]' ),

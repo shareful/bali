@@ -57,6 +57,7 @@
 											<td><?php echo $bill->security_perc; ?></td>
 											<td>
 												<a class="btn btn-edit" href="#payment/receive/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Receive </a>
+												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="payment/s_ledger/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Payments </a>
 											</td>
 										</tr>
 										<?php 

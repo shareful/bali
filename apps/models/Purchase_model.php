@@ -106,7 +106,6 @@ class Purchase_model extends My_Model {
 		$this->field->total_amount = 0;
 		$this->field->payable_amount = 0;
 		$this->field->paid_amount = 0;
-		$this->field->advance_id = 0;
 		$this->field->deleted = 0;
 		$this->field->created = date('Y-m-d H:i:s', time());
 		$this->field->created_by = $this->session->userdata('user_id');
