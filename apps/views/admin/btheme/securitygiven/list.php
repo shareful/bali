@@ -2,22 +2,16 @@
 <?php
 	$theme = $this->config->item('theme');
 ?>
-<div class="row">
-	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Project: <?php echo $project->name ?> <span>> <?php echo $item->name ?></span></h1>
-	</div>
-	
-</div>
 <section id="widget-grid" class="">
 	<div class="row">
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
 				<header> 
-					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Purchase Bills</h6>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Security Given List</h6>
 				</header>
 				<div class="form-actions">
 	                <div class="span12 center">
-	                	<a class="btn btn-success withpadding" href="#purchase/new_bill/<?php echo $project_id ;?>/<?php echo $item_id ;?>">New Bill</a>                            
+	                	<a class="btn btn-success withpadding" href="#securitygiven/save">Make a New Security Payment</a>                            
 	                </div>
 	                <br>
 					<div class="span12 center">
@@ -31,16 +25,16 @@
 									<thead>
 										<tr>
 											<th data-class="expand">SN</th>
-											<th data-class="expand">Bill #</th>
-											<th data-class="expand">Bill Date</th>
+											<th data-class="expand">Code</th>
 											<th data-class="expand">Ref #</th>
-											<th data-class="expand">Supplier</th>
-											<th data-class="expand">Total Amt (tk)</th>
-											<th data-class="expand">Paid Amt (tk)</th>
-											<th data-class="expand">Payment Due (tk)</th>
-											<th data-class="expand">Sec %</th>
-											<th data-class="expand">Sec Due (tk)</th>
-											<th data-class="expand">Status</th>
+											<th data-class="expand">Project</th>
+											<th data-class="expand">Item</th>
+											<th data-class="expand">Supplier Name</th>
+											<th data-class="expand">Amount Tk</th>
+											<th data-class="expand">Transaction Date</th>
+											<th data-class="expand">Adjusted to Bill Tk</th>
+											<th data-class="expand">Pending to Adjust Tk</th>
+											<th data-class="expand">Notes</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
 									</thead>
@@ -48,60 +42,23 @@
 										
 										<?php	
 										$c = 1;
-										foreach ($bills as $bill) { 
-											$sec_due = false;
-											$payment_due = false;
-
-											$sec_amt = ($bill->total_amount - $bill->payable_amount);
-											$due_amt = ($bill->total_amount - $bill->paid_amount);
-											if ($due_amt == 0) {
-												# do nothing...
-											} else if ($due_amt > $sec_amt) {
-												// Security and Payment both are due
-												if ($sec_amt > 0) {
-													$sec_due = true;
-												}
-												$payment_due = true;
-											} else if ($sec_amt > 0) {
-												// Payment are clear but security due
-												$sec_due = true;
-											}
-
-											$payable_due = $bill->payable_amount - $bill->paid_amount;
-											if ($payable_due < 0) {
-												$payable_due = 0;
-											}
-
-											$security_due = $payable_due > 0 ? $sec_amt :  ($sec_amt - ($bill->paid_amount - $due_amt));
-
-											$payable_due = number_format($payable_due, 2, '.', '');
-											$security_due = number_format($security_due, 2, '.', '');
-										?>
-										<tr id="row-purchases-<?php echo $bill->id;?>">
+										foreach ($records as $record) { ?>
+										<tr id="row-records-<?php echo $record->id;?>">
 											<td><?php echo $c; ?></td>
-											<td><a href="purchase/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.$bill->code; ?></a></td>
-											<td><?php echo date("m/d/Y", strtotime($bill->bill_date)); ?></td>
-											<td><?php echo $bill->ref_no; ?></td>
-											<td><?php echo $bill->supplier->name; ?></td>
-											<td><?php echo $bill->total_amount; ?></td>
-											<td><?php echo $bill->paid_amount; ?></td>
-											<td><?php echo $payable_due; ?></td>
-											<td><?php echo $bill->security_perc; ?></td>
-											<td><?php echo $security_due; ?></td>
+											<td><?php echo $record->code; ?></td>
+											<td><?php echo $record->ref_no; ?></td>
+											<td><?php echo $record->project->name; ?></td>
+											<td><?php echo isset($record->item) ? $record->item->code.' - '.$record->item->name : ''; ?></td>
+											<td><?php echo $record->supplier->code.' - '.$record->supplier->name; ?></td>
+											<td><?php echo $record->amount; ?></td>
+											<td><?php echo date("m/d/Y", strtotime($record->trans_date)); ?></td>
+											<td><?php echo $record->amount_adjusted; ?></td>
+											<td><?php echo number_format($record->amount - $record->amount_adjusted, 2, '.', ''); ?></td>
+											<td><?php echo $record->notes; ?></td>
 											<td>
-												<?php
-													
-												if ($sec_due) {
-													echo '<span class="label bg-color-orange pull-right">Security Due</span> ';
-												}
-												if ($payment_due) {
-													echo '<span class="label bg-color-pink pull-right">Payment Due</span>';
-												}
-												?>
-											</td>
-											<td>
-												<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Make </a>
-												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="payment/p_ledger/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Payments </a>
+												
+												<a class="btn btn-edit" href="#securitygiven/adjust/<?php echo $record->id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Adjust</a>
+												<!-- <a class="btn btn-info" data-toggle="modal" data-target="#remoteModal" href="account/depositor_ledger/<?php echo $record->id;?>" id="ledger_record" ><i class="icon-trash icon-white"></i> Ledger</a> -->
 											</td>
 										</tr>
 										<?php 
@@ -117,7 +74,7 @@
 			</div>
 		</article>
 	</div>
-</section>
+</section>					
 
 <!-- Dynamic Modal -->  
 <div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">  
@@ -130,14 +87,14 @@
 <!-- /.modal --> 
 
 <script type="text/javascript">
-	var deletePurchase=function(id){
-		if (confirm('Are you sure want to delete the Purchase?')) {			
+	var deleteCustomer=function(id){
+		if (confirm('Are you sure want to delete the Customer?')) {			
 			var $btn = $(this);
 			$btn.val('loading');
 			$btn.attr({disabled: true});
 
 			$.ajax({
-				url : "<?php echo $this->config->item('base_url') ?>purchase/delete",
+				url : "<?php echo $this->config->item('base_url') ?>customer/delete",
 				type : "post",
 				dataType : "json",
 				data : 'id='+id,
@@ -145,10 +102,10 @@
 					$btn.attr({disabled: false});
 					$btn.val('Save changes');
 					if (data.success == 'true') {
-						$('#row-purchases-'+id).fadeOut().remove();
+						$('#row-records-'+id).fadeOut().remove();
 						$.bigBox({
 							title : "Success",
-							content : "Purchase deleted.",
+							content : "Customer deleted.",
 							color : "#739E73",
 							timeout: 8000,
 							icon : "fa fa-check",

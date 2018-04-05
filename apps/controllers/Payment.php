@@ -95,6 +95,7 @@ class Payment extends My_Controller {
 					$this->expense->set_value('exp_type', 'purchase');
 					$this->expense->set_value('notes', $this->input->post('notes'));
 					$this->expense->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('trans_date')), 'MYSQL') );
+					$this->expense->set_value('company_id', $this->session->userdata('company_id'));
 					$this->expense->insert();
 
 					// update purchase bill
@@ -210,6 +211,7 @@ class Payment extends My_Controller {
 					$this->income->set_value('income_type', 'sale');
 					$this->income->set_value('notes', $this->input->post('notes'));
 					$this->income->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('trans_date')), 'MYSQL') );
+					$this->income->set_value('company_id', $this->session->userdata('company_id'));
 					$this->income->insert();
 
 					// Update Sale Bill

@@ -33,11 +33,14 @@
 											<th data-class="expand">SN</th>
 											<th data-class="expand">Bill #</th>
 											<th data-class="expand">Bill Date</th>
+											<th data-class="expand">Ref #</th>
 											<th data-class="expand">Customer</th>
 											<th data-class="expand">Total Amt (tk)</th>
 											<th data-class="expand">Received Amt (tk)</th>
-											<th data-class="expand">Due Amt (tk)</th>
+											<th data-class="expand">Payment Due (tk)</th>
 											<th data-class="expand">Sec %</th>
+											<th data-class="expand">Sec Due (tk)</th>
+											<th data-class="expand">Status</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
 									</thead>
@@ -45,16 +48,57 @@
 										
 										<?php	
 										$c = 1;
-										foreach ($bills as $bill) { ?>
+										foreach ($bills as $bill) { 
+											$sec_due = false;
+											$payment_due = false;
+
+											$sec_amt = ($bill->total_amount - $bill->receivable_amount);
+											$due_amt = ($bill->total_amount - $bill->received_amount);
+											if ($due_amt == 0) {
+												# do nothing...
+											} else if ($due_amt > $sec_amt) {
+												// Security and Payment both are due
+												if ($sec_amt > 0) {
+													$sec_due = true;
+												}
+												$payment_due = true;
+											} else if ($sec_amt > 0) {
+												// Payment are clear but security due
+												$sec_due = true;
+											}
+
+											$receivable_due = $bill->receivable_amount - $bill->received_amount;
+											if ($receivable_due < 0) {
+												$receivable_due = 0;
+											}
+
+											$security_due = $receivable_due > 0 ? $sec_amt :  ($sec_amt - ($bill->received_amount - $due_amt));
+
+											$receivable_due = number_format($receivable_due, 2, '.', '');
+											$security_due = number_format($security_due, 2, '.', '');
+										?>
 										<tr id="row-sales-<?php echo $bill->id;?>">
 											<td><?php echo $c; ?></td>
 											<td><a href="sale/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->customer->code.'-'.$bill->item->code.'-'.$bill->code; ?></a></td>
 											<td><?php echo date("m/d/Y", strtotime($bill->bill_date)); ?></td>
+											<td><?php echo $bill->ref_no; ?></td>
 											<td><?php echo $bill->customer->name; ?></td>
 											<td><?php echo $bill->total_amount; ?></td>
 											<td><?php echo $bill->received_amount; ?></td>
-											<td><?php echo ($bill->total_amount - $bill->received_amount); ?></td>
+											<td><?php echo $receivable_due; ?></td>
 											<td><?php echo $bill->security_perc; ?></td>
+											<td><?php echo $security_due; ?></td>
+											<td>
+												<?php
+													
+												if ($sec_due) {
+													echo '<span class="label bg-color-orange pull-right">Security Due</span> ';
+												}
+												if ($payment_due) {
+													echo '<span class="label bg-color-pink pull-right">Payment Due</span>';
+												}
+												?>
+											</td>
 											<td>
 												<a class="btn btn-edit" href="#payment/receive/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Receive </a>
 												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="payment/s_ledger/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Payments </a>

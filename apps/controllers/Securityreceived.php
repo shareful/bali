@@ -1,0 +1,121 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Securityreceived extends My_Controller {
+
+	function __construct()
+	{
+		parent::__construct();
+		
+		if ( ! $this->session->userdata('user_id'))
+		{
+			redirect('', 'refresh');
+		}
+		
+		// if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+		// 	show_404();
+		// 	return;
+		// }
+
+		$this->load->model('securitytaken_model','securitytaken');		
+		$this->load->model('item_model','item');		
+		$this->load->model('customer_model','customer');		
+		$this->load->model('project_model','project');		
+		$this->load->model('income_model','income');		
+	}
+
+	public function index()
+	{
+		
+		$data['title'] = $this->config->item('company_name');
+		$data['menu'] = 'list';
+		$data['records'] = $this->securitytaken->get_list_all();
+		if(is_ajax()){
+			$this->load->view($this->config->item('admin_theme').'/securitytaken/list', $data);
+			return;
+		}
+
+		// $data['privileges'] = $this->privileges;
+		$data['content'] = $this->config->item('admin_theme').'/securitytaken/list';
+		$this->load->view($this->config->item('admin_theme').'/template', $data);
+		
+	}
+
+	public function save($id=null){
+		// ONly Super admin can create new Security
+		// if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+		// 	show_404();
+		// 	return;
+		// }
+
+		if($this->input->post())
+		{
+			$this->form_validation->set_rules($this->securitytaken->validate);
+
+			if ($this->form_validation->run()==FALSE) {
+				echo json_encode(array("error"=>$this->form_validation->error_String()));
+			}
+			else
+			{
+				 
+				
+				$record = $this->securitytaken->get_by(array('code'=>$this->input->post('code')));
+				if (count($record) > 0)
+				{
+					echo json_encode(array('success'=>'false','error'=>'Record already exists with the code '.$this->input->post('code').', Please try with another Code.')); exit;
+				}
+
+				$this->db->trans_start();
+
+				$this->assignPostData($this->securitytaken);
+				$this->securitytaken->set_value('company_id', $this->session->userdata('company_id'));
+				$new_record_id = $this->securitytaken->insert();
+
+				if ($new_record_id) {
+					$amount = $this->input->post('amount');
+
+					// Entry Expense Voucher
+					$voucher_code = $this->income->get_new_code();
+					$this->income->set_value('code', $voucher_code);
+					$this->income->set_value('ref_id', $new_record_id);
+					$this->income->set_value('ref_code', $this->input->post('code'));
+					$this->income->set_value('project_id', $this->input->post('project_id'));
+					$this->income->set_value('amount', $amount);
+					$this->income->set_value('income_type', 'security');
+					$this->income->set_value('notes', $this->input->post('notes'));
+					$this->income->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('trans_date')), 'MYSQL') );
+					$this->income->set_value('company_id', $this->session->userdata('company_id'));
+					$this->income->insert();					
+				}
+
+				$this->db->trans_complete();
+
+				if($this->db->trans_status() === TRUE AND $new_record_id){
+					echo json_encode(array('success'=>'true','msg'=>"Security Payment has been created.", 'id'=>$new_record_id)); exit;
+				} else {
+					echo json_encode(array('success'=>'false','error'=>"Payment can't be created. Try again or contact with administrator.")); exit;	
+				}
+			}	
+		}		
+		else{
+			$data['title'] = $this->config->item('company_name');
+			$data['menu'] = 'record';
+			$data['projects'] = $this->project->get_list_all();
+			$data['customers'] = $this->customer->get_list_all();
+			$data['items'] = $this->item->get_list_all();
+			
+			$data['record']=$this->securitytaken->get($id);
+			
+			$data['code'] = $this->securitytaken->get_new_code();
+            		
+			if(is_ajax()){
+	            $this->load->view($this->config->item('admin_theme').'/securitytaken/save', $data);
+	            return;
+	        }
+	        $data['content'] = $this->config->item('admin_theme').'/securitytaken/save';
+	        $this->load->view($this->config->item('admin_theme').'/template', $data);
+		}
+			
+	}
+}

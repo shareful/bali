@@ -23,24 +23,46 @@
 				<a href="stock" title="Stock"><i class="fa fa-lg fa-fw fa-cube"></i> <span class="menu-item-parent">Stock</span></a>
 			</li>
 			<li class="">
-				<a href="#" title="Sales"><i class="fa fa-lg fa-fw fa-hand-pointer-o"></i> <span class="menu-item-parent">Sales</span></a>
+				<a href="#" title="Security Payment Given"><i class="fa fa-lg fa-fw fa-arrow-up"></i> <span class="menu-item-parent">Security Pmt Given</span></a>
 				<ul>
 					<li class="">
-						<a href="sale/save"><i class="fa fa-lg fa-fw fa-edit"></i> New Sale</a>
+						<a href="securitygiven/save"><i class="fa fa-lg fa-fw fa-edit"></i> Make a Security Pmt</a>
 					</li>
 					<li class="">
-						<a href="sale/list_all"><i class="fa fa-lg fa-fw fa-list"></i> Sale List</a>
+						<a href="securitygiven"><i class="fa fa-lg fa-fw fa-list"></i> List of Security Pmt Given</a>
 					</li>
 				</ul>
 			</li>
 			<li class="">
-				<a href="#" title="Purchase"><i class="fa fa-lg fa-fw fa-archive"></i> <span class="menu-item-parent">Purchase</span></a>
+				<a href="#" title="Security Payment Received"><i class="fa fa-lg fa-fw fa-arrow-down"></i> <span class="menu-item-parent">Security Pmt Received</span></a>
 				<ul>
 					<li class="">
-						<a href="purchase/save"><i class="fa fa-lg fa-fw fa-edit"></i> New Purchase</a>
+						<a href="securityreceived/save"><i class="fa fa-lg fa-fw fa-edit"></i> Make a Security Pmt</a>
 					</li>
 					<li class="">
-						<a href="purchase/list_all"><i class="fa fa-lg fa-fw fa-list"></i> Purchase List</a>
+						<a href="securityreceived"><i class="fa fa-lg fa-fw fa-list"></i> List of Security Pmt Received</a>
+					</li>
+				</ul>
+			</li>
+			<li class="">
+				<a href="#" title="Advance Given"><i class="fa fa-lg fa-fw fa-arrow-circle-up"></i> <span class="menu-item-parent">Advance Given</span></a>
+				<ul>
+					<li class="">
+						<a href="advancegiven/save"><i class="fa fa-lg fa-fw fa-edit"></i> Make an Advance</a>
+					</li>
+					<li class="">
+						<a href="advancegiven"><i class="fa fa-lg fa-fw fa-list"></i> List of Advance Given</a>
+					</li>
+				</ul>
+			</li>
+			<li class="">
+				<a href="#" title="Advance Received"><i class="fa fa-lg fa-fw fa-arrow-circle-down"></i> <span class="menu-item-parent">Advance Received</span></a>
+				<ul>
+					<li class="">
+						<a href="advancereceived/save"><i class="fa fa-lg fa-fw fa-edit"></i> Receive New Advance</a>
+					</li>
+					<li class="">
+						<a href="advancereceived"><i class="fa fa-lg fa-fw fa-list"></i> List of Advance Received</a>
 					</li>
 				</ul>
 			</li>
