@@ -19,6 +19,7 @@ class Advancegiven extends My_Controller {
 		// }
 
 		$this->load->model('advancegiven_model','advancegiven');		
+		$this->load->model('purchase_model','purchase');		
 		$this->load->model('item_model','item');		
 		$this->load->model('supplier_model','supplier');		
 		$this->load->model('project_model','project');		
@@ -49,7 +50,7 @@ class Advancegiven extends My_Controller {
 		// 	return;
 		// }
 
-		if($this->input->post())
+		if($this->input->method(TRUE)=='POST')
 		{
 			$this->form_validation->set_rules($this->advancegiven->validate);
 
@@ -117,5 +118,29 @@ class Advancegiven extends My_Controller {
 	        $this->load->view($this->config->item('admin_theme').'/template', $data);
 		}
 			
+	}
+
+	public function adjust($id){
+		if($this->input->method(TRUE)=='POST'){
+
+		} else {
+			$data['title'] = $this->config->item('company_name');
+			$data['menu'] = 'record';
+			$data['advance'] = $this->advancegiven->get($id);
+			
+			if (empty($data['advance'])) {
+				exit('Advance record not found');
+			}
+
+			$data['bills'] = $this->purchase->get_list_all($data['advance']->project_id, $data['advance']->item_id, $data['advance']->supplier_id, array('paid_amount < payable_amount'), 'code', 'asc');
+
+			if(is_ajax()){
+	            $this->load->view($this->config->item('admin_theme').'/advancegiven/adjust', $data);
+	            return;
+	        }
+
+	        $data['content'] = $this->config->item('admin_theme').'/advancegiven/adjust';
+	        $this->load->view($this->config->item('admin_theme').'/template', $data);
+		}
 	}
 }
