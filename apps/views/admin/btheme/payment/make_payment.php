@@ -87,12 +87,20 @@
 	                                </section>
 
 	                                <section class="col col-2">
-										<label for="security_perc" class="control-label">Security %</label>
+										<label for="security_perc" class="control-label">Security </label>
 									</section>
-									<section class="col col-4">	
+									<section class="col col-1">	
 										<label class="input">
-                                            <input id="security_perc" type="text" name="security_perc" value="<?php echo $bill->security_perc ?>" placeholder="Securoty Percentage" readonly>
+                                            <input id="security_perc" type="text" name="security_perc" value="<?php echo $bill->security_perc ?> %" placeholder="Securoty Percentage" readonly>
                                         </label>
+									</section>
+									<section class="col col-2">	
+										<label class="input">
+                                            <input id="security_amount" type="text" name="security_amount" value="<?php echo $bill->security_amount ?>" placeholder="Securoty Percentage" readonly>
+                                        </label>
+									</section>
+									<section class="col col-1">
+										<label class="control-label">Tk </label>
 									</section>
 								</div>								
 							</fieldset>

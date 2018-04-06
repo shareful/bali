@@ -197,8 +197,7 @@ class Sale_model extends My_Model {
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all($project_id=null, $item_id=null){
-		$where = array();
+	public function get_list_all($project_id=null, $item_id=null, $customer_id=null, $where=array(), $order_by='code', $order='desc'){
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['deleted'] = 0;
 		if ($project_id) {
@@ -208,7 +207,12 @@ class Sale_model extends My_Model {
 			$where['item_id'] = $item_id;
 		}
 
-		$result = parent::with('project')->with('customer')->with('item')->order_by('code', 'desc')->get_many_by($where);
+		if ($customer_id) {
+			$where['customer_id'] = $customer_id;
+		}
+
+
+		$result = parent::with('project')->with('customer')->with('item')->order_by($order_by, $order)->get_many_by($where);
 		return $result;
 	}
 

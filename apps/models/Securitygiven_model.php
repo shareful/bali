@@ -227,4 +227,10 @@ class Securitygiven_model extends My_Model {
         return $voucher_code;
     }
 
+   public function update_adjust_amount($id, $amount_to_add){
+		$this->db->set('amount_adjusted', 'amount_adjusted+'.$amount_to_add, FALSE);
+		$this->db->where(array('id'=> $id));
+		$this->db->update($this->_table);	
+	}
+
 }

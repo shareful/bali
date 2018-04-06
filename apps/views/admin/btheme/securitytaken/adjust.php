@@ -2,11 +2,11 @@
 <?php
 	$theme = $this->config->item('theme');
 
-	$pending_to_adjust = $advance->amount-$advance->amount_adjusted;
+	$pending_to_adjust = $security->amount-$security->amount_adjusted;
 ?>
 <div class="row">
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Advance #: <?php echo $advance->code ?> <span>> Adjust to Purchase Bills</span></h1>
+		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Security #: <?php echo $security->code ?> <span>> Adjust to Sale Bills</span></h1>
 	</div>	
 </div>
 
@@ -16,7 +16,7 @@
 			<div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
 				<header>
 					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-					<h2>Adjust Bills From Advance</h2>				
+					<h2>Adjust Bills From Security</h2>				
 				</header>
 
 				<!-- widget div-->
@@ -30,16 +30,16 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 						
-						<form action="advancegiven/save" method="post" class="smart-form" id="fromadvanceadjust">
+						<form action="securityreceived/save" method="post" class="smart-form" id="fromsecurityadjust">
 							<fieldset>
-								<legend>Advance Info</legend>
+								<legend>Security Info</legend>
 								<div class="row">
 									<section class="col col-2">
 	                                    <label class="control-label" for="code">Code #</label>
 	                                </section>
 	                                <section class="col col-4">
 	                                    <label class="input"> 
-	                                    	<input type="text" name="code" value="<?php echo $advance->code ?>" id="code" class="span5" placeholder="Will generate automatically" readonly="readonly">
+	                                    	<input type="text" name="code" value="<?php echo $security->code ?>" id="code" class="span5" placeholder="Will generate automatically" readonly="readonly">
 	                                    </label>
 	                                </section> 
 
@@ -48,18 +48,18 @@
 	                                </section>
 	                                <section class="col col-4">
 	                                    <label class="input"> 
-	                                    	<input type="text" value="<?php echo '('.$advance->project->code.') '.$advance->project->name ?>" class="span5" readonly="readonly">
+	                                    	<input type="text" value="<?php echo '('.$security->project->code.') '.$security->project->name ?>" class="span5" readonly="readonly">
 	                                    </label>
 	                                </section> 	                                
 	                            </div>
 
 	                            <div class="row">
 	                                <section class="col col-2">
-	                                    <label class="control-label">Supplier</label>
+	                                    <label class="control-label">Customer</label>
 	                                </section>
 	                                <section class="col col-4">
 	                                    <label class="input"> 
-	                                    	<input type="text" value="<?php echo '('.$advance->supplier->code.') '.$advance->supplier->name ?>" class="span5" readonly="readonly">
+	                                    	<input type="text" value="<?php echo '('.$security->customer->code.') '.$security->customer->name ?>" class="span5" readonly="readonly">
 	                                    </label>
 	                                </section> 
 
@@ -68,18 +68,18 @@
 	                                </section>
 	                                <section class="col col-4">
 	                                    <label class="input"> 
-	                                    	<input type="text" value="<?php echo isset($advance->item) ? '('.$advance->item->code.') '.$advance->item->name : ''; ?>" class="span5" readonly="readonly">
+	                                    	<input type="text" value="<?php echo isset($security->item) ? '('.$security->item->code.') '.$security->item->name : ''; ?>" class="span5" readonly="readonly">
 	                                    </label>
 	                                </section> 
 	                            </div>
 
 	                            <div class="row">
 	                            	<section class="col col-2">
-	                                    <label class="control-label" for="advance_amount">Advance Amount</label>
+	                                    <label class="control-label" for="security_amount">Security Amount</label>
 	                                </section>
 	                                <section class="col col-3">
 	                                    <label class="input"> 
-	                                    	<input type="text" value="<?php echo $advance->amount ?>" id="advance_amount" class="span5" readonly="readonly">
+	                                    	<input type="text" value="<?php echo $security->amount ?>" id="security_amount" class="span5" readonly="readonly">
 	                                    </label>
 	                                </section> 
 	                                <section class="col col-1">
@@ -91,7 +91,7 @@
 	                                </section>
 	                                <section class="col col-3">
 	                                    <label class="input"> 
-	                                    	<input type="text" value="<?php echo $advance->amount_adjusted ?>" id="amount_adjusted" class="span5" readonly="readonly">
+	                                    	<input type="text" value="<?php echo $security->amount_adjusted ?>" id="amount_adjusted" class="span5" readonly="readonly">
 	                                    </label>
 	                                </section> 
 	                                <section class="col col-1">
@@ -115,14 +115,14 @@
 							</fieldset>
 
 							<fieldset>
-								<legend>Bills to Adjust</legend>
+								<legend>Bills to Adjust <small><small><small>(Bills would be appear bellow which are paid but security amount due only)</small></small></small></legend>
 
 								<div class="table-responsive" id="sales_details2">
 									<table class="table table-striped table-bordered table-hover display compact" cellspacing="0"  width="90%">
 										<thead>
 											<tr>
 		                                        <th>Bill #</th>
-		                                        <th>Amount Due <small>(without security)</small></th>
+		                                        <th>Security Amount Due</th>
 		                                        <th>Adjust Now</th>                    
 		                                    </tr>										
 										</thead>
@@ -131,25 +131,26 @@
 												$c = 1;
 												$pending_to_adjust_left = $pending_to_adjust;
 												$total_adjust_now = 0;
+												$nul_var = null;
 
 												foreach ($bills as $bill) { 
-													$bill = purchase_bill_cal_info($bill, $pending_to_adjust_left);
+													$bill = sale_bill_cal_info($bill, $nul_var, $pending_to_adjust_left);
 
-													$total_adjust_now += $bill->amount_can_pay;
+													$total_adjust_now += $bill->sec_amount_can_receive;
 
-													$payable_due_amt = number_format($bill->payable_due_amt, 2, '.', '');
-													// $security_due_amt = number_format($bill->security_due_amt, 2, '.', '');
-													$amount_can_pay = number_format($bill->amount_can_pay, 2, '.', '');
+													// $receivable_due_amt = number_format($bill->receivable_due_amt, 2, '.', '');
+													$security_due_amt = number_format($bill->security_due_amt, 2, '.', '');
+													$sec_amount_can_receive = number_format($bill->sec_amount_can_receive, 2, '.', '');
 											?>
 												<tr id="row-bills-<?php echo $bill->id;?>">
 				                                	<td>
-				                                		<a href="purchase/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.$bill->code; ?></a>
+				                                		<a href="sale/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->customer->code.'-'.$bill->item->code.'-'.$bill->code; ?></a>
 				                                	</td>
-				                                	<td><?php echo $payable_due_amt; ?></td>
+				                                	<td><?php echo $security_due_amt; ?></td>
 				                                	<td>
-				                                		<input type="text" name="adjust_amount[]" value="<?php echo $amount_can_pay; ?>" id="amount_adjusted_<?php echo $bill->id ?>" class="span5 amount_to_pay">
+				                                		<input type="text" name="adjust_amount[]" value="<?php echo $sec_amount_can_receive; ?>" id="amount_adjusted_<?php echo $bill->id ?>" class="span5 amount_to_receive">
 				                                		<input type="hidden" name="bill_id[]" value="<?php echo $bill->id ?>" >
-				                                		<input type="hidden" name="payment_due[]" id="payable_due_<?php echo $bill->id ?>" value="<?php echo $payable_due_amt ?>" >
+				                                		<input type="hidden" name="payment_due[]" id="receivable_due_<?php echo $bill->id ?>" value="<?php echo $security_due_amt ?>" >
 				                                	</td>
 												</tr>
 											<?php 
@@ -170,7 +171,7 @@
 							<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
                             <div class="form-actions">	          
                             	<input type="button" name="cancel" class="btn-lg btn-back" id="cancel_changes" value="Cancel" onclick="history.go(-1)" />                  
-	                            <input type="button" name="submit" class="btn-lg btn-success" id="make_payment" value="Payment Adjust Now From Advance" <?php echo count($bills) == 0 ? 'disabled' : '' ;?> />
+	                            <input type="button" name="submit" class="btn-lg btn-success" id="make_payment" value="Security Payment Adjust Now" <?php echo count($bills) == 0 ? 'disabled' : '' ;?> />
 	                        </div>
 						</form>
 
@@ -194,7 +195,7 @@
 	var pending_to_adjust = <?php echo $pending_to_adjust ?>;
 	// var pending_to_adjust_left = <?php echo $pending_to_adjust_left ?>;
 
-	$('.amount_to_pay').change(function(){
+	$('.amount_to_receive').change(function(){
 		var amt = parseFloat($(this).val());
 		if (isNaN(amt)) {
 			amt = 0;
@@ -205,14 +206,14 @@
 
 		var total_adjust_now = 0;
 		var input_err = 0;
-		$('.amount_to_pay').each(function(index, value){
+		$('.amount_to_receive').each(function(index, value){
 			var val = parseFloat($(this).val());
 			if (isNaN(val)) {
 				val = 0;
 			}
 			var bill_id = $(this).attr('id');
 			bill_id = bill_id.replace("amount_adjusted_","");
-			var payment_due = parseFloat($('#payable_due_'+bill_id).val());
+			var payment_due = parseFloat($('#receivable_due_'+bill_id).val());
 			if (isNaN(payment_due)) {
 				payment_due = 0;
 			}
@@ -265,13 +266,13 @@
 			
 
 			$.ajax({
-				url : "<?php echo $this->config->item('base_url') ?>advancegiven/adjust/<?php echo $advance->id ?>",
+				url : "<?php echo $this->config->item('base_url') ?>securityreceived/adjust/<?php echo $security->id ?>",
 				type : "post",
 				dataType : "json",
-				data : $("#fromadvanceadjust").serialize(),
+				data : $("#fromsecurityadjust").serialize(),
 				success : function(data) {
 					$btn.attr({disabled: false});
-					$btn.val('Payment Adjust Now From Advance');
+					$btn.val('Security Payment Adjust Now');
 					if (data.success == 'true') {
 						$.bigBox({
 							title : "Success",
@@ -281,9 +282,9 @@
 							icon : "fa fa-check",
 							number : ""
 						});
-						$("form#fromadvanceadjust").trigger("reset");
-						// window.open('advancegiven/receipt/'+data.id, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=1020,height=780');
-						location.hash = 'advancegiven/index';
+						$("form#fromsecurityadjust").trigger("reset");
+						// window.open('securityreceived/receipt/'+data.id, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=1020,height=780');
+						location.hash = 'securityreceived/index';
 					} else if(data.error != ""){
 						$.bigBox({
 							title : "Error!",
@@ -297,7 +298,7 @@
 				},
 				error: function(){
 					$btn.attr({disabled: false});
-					$btn.val('Payment Adjust Now From Advance');
+					$btn.val('Security Payment Adjust Now');
 					$.bigBox({
 						title : "Error!",
 						content : data.error,

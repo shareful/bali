@@ -58,7 +58,7 @@
 											<td>
 												
 												<a class="btn btn-edit" href="#securityreceived/adjust/<?php echo $record->id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Adjust</a>
-												<!-- <a class="btn btn-info" data-toggle="modal" data-target="#remoteModal" href="account/depositor_ledger/<?php echo $record->id;?>" id="ledger_record" ><i class="icon-trash icon-white"></i> Ledger</a> -->
+												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="securityreceived/ledger/<?php echo $record->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Adjustments </a>
 											</td>
 										</tr>
 										<?php 

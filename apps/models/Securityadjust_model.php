@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This is Advanceadjust Model
+ * This is Securityadjust Model
  * 
  * 
  * @package         CodeIgniter
@@ -11,8 +11,8 @@
  * @license         Commercial
  */
 
-class Advanceadjust_model extends My_Model {
-	protected $_table = 'advance_adjustments';
+class Securityadjust_model extends My_Model {
+	protected $_table = 'security_adjustments';
 	protected $primary_key = 'id';
 	protected $protected_atributes = array('id');
 	protected $soft_delete = true;
@@ -23,8 +23,8 @@ class Advanceadjust_model extends My_Model {
 	 * User Table form validation rules
 	 */
 	public $validate = array(
-        array( 'field' => 'advance_id', 
-               'label' => 'Advance Code #',
+        array( 'field' => 'security_id', 
+               'label' => 'Security Code #',
                'rules' => 'required' ),
         array( 'field' => 'bill_id', 
                'label' => 'Bill #',
@@ -51,7 +51,7 @@ class Advanceadjust_model extends My_Model {
 		$this->field = new stdClass;
 		$this->field->id = null;
 		$this->field->trans_type = null;
-		$this->field->advance_id = null;
+		$this->field->security_id = null;
 		$this->field->bill_id = null;
 		$this->field->amount = null;
 		$this->field->trans_date = null;
@@ -148,13 +148,13 @@ class Advanceadjust_model extends My_Model {
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all($trans_type, $advance_id=null, $bill_id=null){
+	public function get_list_all($trans_type, $security_id=null, $bill_id=null){
 		$where = array();
 		$where['deleted'] = 0;
 		$where['trans_type'] = $trans_type;
 		
-		if ($advance_id) {
-			$where['advance_id'] = $advance_id;
+		if ($security_id) {
+			$where['security_id'] = $security_id;
 		}
 
 		if ($bill_id) {

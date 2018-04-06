@@ -48,34 +48,22 @@
 										
 										<?php	
 										$c = 1;
+										$nul_var1 = null;
+										$nul_var2 = null;
 										foreach ($bills as $bill) { 
-											$sec_due = false;
-											$payment_due = false;
+											$bill = purchase_bill_cal_info($bill, $nul_var1, $nul_var2);
 
-											$sec_amt = ($bill->total_amount - $bill->payable_amount);
-											$due_amt = ($bill->total_amount - $bill->paid_amount);
-											if ($due_amt == 0) {
-												# do nothing...
-											} else if ($due_amt > $sec_amt) {
-												// Security and Payment both are due
-												if ($sec_amt > 0) {
-													$sec_due = true;
-												}
-												$payment_due = true;
-											} else if ($sec_amt > 0) {
-												// Payment are clear but security due
-												$sec_due = true;
+											$payable_due_amt_css = '';
+											$security_due_amt_css = '';
+											
+											if ($bill->payable_due_amt > 0) {
+												$payable_due_amt_css = 'color: red';
 											}
 
-											$payable_due = $bill->payable_amount - $bill->paid_amount;
-											if ($payable_due < 0) {
-												$payable_due = 0;
+											if ($bill->security_due_amt > 0) {
+												$security_due_amt_css = 'color: red';
 											}
 
-											$security_due = $payable_due > 0 ? $sec_amt :  ($sec_amt - ($bill->paid_amount - $due_amt));
-
-											$payable_due = number_format($payable_due, 2, '.', '');
-											$security_due = number_format($security_due, 2, '.', '');
 										?>
 										<tr id="row-purchases-<?php echo $bill->id;?>">
 											<td><?php echo $c; ?></td>
@@ -85,16 +73,16 @@
 											<td><?php echo $bill->supplier->name; ?></td>
 											<td><?php echo $bill->total_amount; ?></td>
 											<td><?php echo $bill->paid_amount; ?></td>
-											<td><?php echo $payable_due; ?></td>
+											<td style="<?php echo $payable_due_amt_css; ?>"><?php echo $bill->payable_due_amt; ?></td>
 											<td><?php echo $bill->security_perc; ?></td>
-											<td><?php echo $security_due; ?></td>
+											<td style="<?php echo $security_due_amt_css; ?>"><?php echo $bill->security_due_amt; ?></td>
 											<td>
 												<?php
 													
-												if ($sec_due) {
+												if ($bill->is_sec_due) {
 													echo '<span class="label bg-color-orange pull-right">Security Due</span> ';
 												}
-												if ($payment_due) {
+												if ($bill->is_payment_due) {
 													echo '<span class="label bg-color-pink pull-right">Payment Due</span>';
 												}
 												?>

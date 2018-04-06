@@ -6,7 +6,7 @@
 ?>
 <div class="row">
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Advance #: <?php echo $advance->code ?> <span>> Adjust to Purchase Bills</span></h1>
+		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Advance #: <?php echo $advance->code ?> <span>> Adjust to Sale Bills</span></h1>
 	</div>	
 </div>
 
@@ -30,7 +30,7 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 						
-						<form action="advancegiven/save" method="post" class="smart-form" id="fromadvanceadjust">
+						<form action="advancereceived/save" method="post" class="smart-form" id="fromadvanceadjust">
 							<fieldset>
 								<legend>Advance Info</legend>
 								<div class="row">
@@ -55,11 +55,11 @@
 
 	                            <div class="row">
 	                                <section class="col col-2">
-	                                    <label class="control-label">Supplier</label>
+	                                    <label class="control-label">Customer</label>
 	                                </section>
 	                                <section class="col col-4">
 	                                    <label class="input"> 
-	                                    	<input type="text" value="<?php echo '('.$advance->supplier->code.') '.$advance->supplier->name ?>" class="span5" readonly="readonly">
+	                                    	<input type="text" value="<?php echo '('.$advance->customer->code.') '.$advance->customer->name ?>" class="span5" readonly="readonly">
 	                                    </label>
 	                                </section> 
 
@@ -133,23 +133,23 @@
 												$total_adjust_now = 0;
 
 												foreach ($bills as $bill) { 
-													$bill = purchase_bill_cal_info($bill, $pending_to_adjust_left);
+													$bill = sale_bill_cal_info($bill, $pending_to_adjust_left);
 
-													$total_adjust_now += $bill->amount_can_pay;
+													$total_adjust_now += $bill->amount_can_receive;
 
-													$payable_due_amt = number_format($bill->payable_due_amt, 2, '.', '');
+													$receivable_due_amt = number_format($bill->receivable_due_amt, 2, '.', '');
 													// $security_due_amt = number_format($bill->security_due_amt, 2, '.', '');
-													$amount_can_pay = number_format($bill->amount_can_pay, 2, '.', '');
+													$amount_can_receive = number_format($bill->amount_can_receive, 2, '.', '');
 											?>
 												<tr id="row-bills-<?php echo $bill->id;?>">
 				                                	<td>
-				                                		<a href="purchase/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.$bill->code; ?></a>
+				                                		<a href="purchase/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->customer->code.'-'.$bill->item->code.'-'.$bill->code; ?></a>
 				                                	</td>
-				                                	<td><?php echo $payable_due_amt; ?></td>
+				                                	<td><?php echo $receivable_due_amt; ?></td>
 				                                	<td>
-				                                		<input type="text" name="adjust_amount[]" value="<?php echo $amount_can_pay; ?>" id="amount_adjusted_<?php echo $bill->id ?>" class="span5 amount_to_pay">
+				                                		<input type="text" name="adjust_amount[]" value="<?php echo $amount_can_receive; ?>" id="amount_adjusted_<?php echo $bill->id ?>" class="span5 amount_to_pay">
 				                                		<input type="hidden" name="bill_id[]" value="<?php echo $bill->id ?>" >
-				                                		<input type="hidden" name="payment_due[]" id="payable_due_<?php echo $bill->id ?>" value="<?php echo $payable_due_amt ?>" >
+				                                		<input type="hidden" name="payment_due[]" id="receivable_due_<?php echo $bill->id ?>" value="<?php echo $receivable_due_amt ?>" >
 				                                	</td>
 												</tr>
 											<?php 
@@ -212,7 +212,7 @@
 			}
 			var bill_id = $(this).attr('id');
 			bill_id = bill_id.replace("amount_adjusted_","");
-			var payment_due = parseFloat($('#payable_due_'+bill_id).val());
+			var payment_due = parseFloat($('#receivable_due_'+bill_id).val());
 			if (isNaN(payment_due)) {
 				payment_due = 0;
 			}
@@ -265,7 +265,7 @@
 			
 
 			$.ajax({
-				url : "<?php echo $this->config->item('base_url') ?>advancegiven/adjust/<?php echo $advance->id ?>",
+				url : "<?php echo $this->config->item('base_url') ?>advancereceived/adjust/<?php echo $advance->id ?>",
 				type : "post",
 				dataType : "json",
 				data : $("#fromadvanceadjust").serialize(),
@@ -282,8 +282,8 @@
 							number : ""
 						});
 						$("form#fromadvanceadjust").trigger("reset");
-						// window.open('advancegiven/receipt/'+data.id, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=1020,height=780');
-						location.hash = 'advancegiven/index';
+						// window.open('advancereceived/receipt/'+data.id, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=1020,height=780');
+						location.hash = 'advancereceived/index';
 					} else if(data.error != ""){
 						$.bigBox({
 							title : "Error!",
