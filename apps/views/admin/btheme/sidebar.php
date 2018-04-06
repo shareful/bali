@@ -73,7 +73,7 @@
 						<a href="expense/save"><i class="fa fa-lg fa-fw fa-edit"></i> New Expense</a>
 					</li>
 					<li class="">
-						<a href="expense/list_all"><i class="fa fa-lg fa-fw fa-list"></i> Expense List</a>
+						<a href="expense"><i class="fa fa-lg fa-fw fa-list"></i> Expense List</a>
 					</li>
 				</ul>
 			</li>

@@ -148,7 +148,7 @@ class Expense_model extends My_Model {
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
 		// $where['deleted'] = 0;
-		$result = parent::order_by('code', 'desc')->get_many_by($where);
+		$result = parent::with('project')->order_by('code', 'desc')->get_many_by($where);
 		return $result;
 	}
 
