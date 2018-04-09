@@ -35,15 +35,15 @@ class Income_model extends My_Model {
         array( 'field' => 'code', 
                'label' => 'Voucher #',
                'rules' => 'required' ),
-        array( 'field' => 'project_id',
-               'label' => 'Project',
-               'rules' => 'required' ),
+        // array( 'field' => 'project_id',
+        //        'label' => 'Project',
+        //        'rules' => 'required' ),
         array( 'field' => 'amount',
                'label' => 'Amount',
                'rules' => 'required|numeric|greater_than[0]' ),
         array( 'field' => 'income_type',
                'label' => 'Income Type',
-               'rules' => 'required|in_list[sale,advance,security,other]|callback_check_income_type' ),
+               'rules' => 'required|in_list[sale,advance,security,invest,other]|callback_check_income_type' ),
         array( 'field' => 'trans_date',
                'label' => 'Trasaction Date',
                'rules' => 'required' ),
@@ -148,7 +148,7 @@ class Income_model extends My_Model {
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
 		// $where['deleted'] = 0;
-		$result = parent::order_by('code', 'desc')->get_many_by($where);
+		$result = parent::with('project')->order_by('code', 'desc')->get_many_by($where);
 		return $result;
 	}
 
@@ -189,4 +189,62 @@ class Income_model extends My_Model {
 
         return $voucher_code;
     }
+
+    /**
+	 * Get total income by filtering 
+	 * @access public
+	 * @return double
+	 */
+	public function get_total(){
+		// item by income can be found on sale payment only
+		if ($this->input->post('item_id')) {
+			$this->db->select('SUM(received_amount) as total');
+			
+			$this->db->where('item_id', $this->input->post('item_id'));
+
+			if ($this->input->post('project_id')) {
+				$this->db->where('project_id', $this->input->post('project_id'));
+			}
+
+			if ($this->input->post('from_date')) {
+				$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+				$this->db->where('bill_date >=', $from_date);
+			}
+
+			if ($this->input->post('to_date')) {
+				$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+				$this->db->where('bill_date <=', $to_date);
+			}
+
+			$this->db->where('company_id', $this->session->userdata('company_id'));
+			$row = $this->db->get('sale_master')->row();
+
+			return $row->total;
+		}
+
+
+
+		$this->db->select('SUM(amount) as total');
+
+		if ($this->input->post('project_id')) {
+			$this->db->where('project_id', $this->input->post('project_id'));
+		}
+
+
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$this->db->where('trans_date >=', $from_date);
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$this->db->where('trans_date <=', $to_date);
+		}
+		
+		$this->db->where('company_id', $this->session->userdata('company_id'));
+		$row = $this->db->get($this->_table)->row();
+
+		return $row->total;		
+	}
 }

@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Expense extends My_Controller {
+class Income extends My_Controller {
 
 	function __construct()
 	{
@@ -18,7 +18,7 @@ class Expense extends My_Controller {
 		// 	return;
 		// }
 
-		$this->load->model('expense_model','expense');		
+		$this->load->model('income_model','income');		
 		$this->load->model('project_model','project');		
 	}
 	
@@ -27,20 +27,20 @@ class Expense extends My_Controller {
 		
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
-		$data['expenses'] = $this->expense->get_list_all();
+		$data['incomes'] = $this->income->get_list_all();
 		if(is_ajax()){
-			$this->load->view($this->config->item('admin_theme').'/expense/list', $data);
+			$this->load->view($this->config->item('admin_theme').'/income/list', $data);
 			return;
 		}
 
 		// $data['privileges'] = $this->privileges;
-		$data['content'] = $this->config->item('admin_theme').'/expense/list';
+		$data['content'] = $this->config->item('admin_theme').'/income/list';
 		$this->load->view($this->config->item('admin_theme').'/template', $data);
 		
 	}
 
 	public function save($id=null){
-		// ONly Super admin can create new expense
+		// ONly Super admin can create new income
 		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
 			show_404();
 			return;
@@ -48,9 +48,9 @@ class Expense extends My_Controller {
 
 		if($this->input->method(TRUE)=='POST')
 		{
-			$rules = $this->expense->validate;
+			$rules = $this->income->validate;
 
-			if ($this->input->post('exp_type') == 'other') {
+			if ($this->input->post('income_type') == 'other') {
 				$rules[] = array( 'field' => 'notes',
 	               'label' => 'Notes',
 	               'rules' => 'required' );
@@ -65,7 +65,7 @@ class Expense extends My_Controller {
 			{
 				 
 				
-				$record = $this->expense->get_by(array('code'=>$this->input->post('code')));
+				$record = $this->income->get_by(array('code'=>$this->input->post('code')));
 				if (count($record) > 0)
 				{
 					echo json_encode(array('success'=>'false','error'=>'Record already exists with the code '.$this->input->post('code').', Please try with another Code.')); exit;
@@ -73,38 +73,43 @@ class Expense extends My_Controller {
 
 				$this->db->trans_start();
 
-				$this->assignPostData($this->expense);
-				$this->expense->set_value('company_id', $this->session->userdata('company_id'));
-				$new_record_id = $this->expense->insert();
+				$this->assignPostData($this->income);
+				$this->income->set_value('company_id', $this->session->userdata('company_id'));
+				$new_record_id = $this->income->insert();
 
 				$this->db->trans_complete();
 
 				if($this->db->trans_status() === TRUE AND $new_record_id){
-					echo json_encode(array('success'=>'true','msg'=>"Expense has been saved.", 'id'=>$new_record_id)); exit;
+					echo json_encode(array('success'=>'true','msg'=>"Income has been saved.", 'id'=>$new_record_id)); exit;
 				} else {
-					echo json_encode(array('success'=>'false','error'=>"Expense can't be saved. Try again or contact with administrator.")); exit;	
+					echo json_encode(array('success'=>'false','error'=>"Income can't be saved. Try again or contact with administrator.")); exit;	
 				}
 			}	
 		}		
 		else{
 			$data['title'] = $this->config->item('company_name');
-			$data['menu'] = 'expense';
-			$data['expense']=$this->expense->get($id);
+			$data['menu'] = 'income';
+			$data['income']=$this->income->get($id);
 			$data['projects'] = $this->project->get_list_all();
-			$data['code'] = $this->expense->get_new_code();
+			$data['income_type_list'] = array(
+				'invest'=>'Invest',
+				'other'=>'Other'
+			);
+
+			$data['code'] = $this->income->get_new_code();
             
 					
 			if(is_ajax()){
-	            $this->load->view($this->config->item('admin_theme').'/expense/save', $data);
+	            $this->load->view($this->config->item('admin_theme').'/income/save', $data);
 	            return;
 	        }
-	        $data['content'] = $this->config->item('admin_theme').'/expense/save';
+	        $data['content'] = $this->config->item('admin_theme').'/income/save';
 	        $this->load->view($this->config->item('admin_theme').'/template', $data);
 		}
 			
 	}
 	public function delete(){
-		// ONly Super admin can dele expense
+		// ONly Super admin can dele income
 		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
 			show_404();
 			return;
@@ -112,26 +117,26 @@ class Expense extends My_Controller {
 
 		if ($this->input->post()) {
 			if ($id=$this->input->post('id')){
-				if($this->expense->delete($id)){		
-					echo json_encode(array('success'=>'true','error'=>"Expense Delete.")); exit;
+				if($this->income->delete($id)){		
+					echo json_encode(array('success'=>'true','error'=>"Income Delete.")); exit;
 				}
 				else{
-					echo json_encode(array('success'=>'false','error'=>"Can't delete this Expense.")); exit;
+					echo json_encode(array('success'=>'false','error'=>"Can't delete this Income.")); exit;
 				}
 			} 
 
 		}
-		// $this->expense->delete_by_id($id);
-		$data['expenses']=$this->expense->get_list_all();
-		$this->load->view($this->config->item('admin_theme').'/expense/list_all',$data);
+		// $this->income->delete_by_id($id);
+		$data['incomes']=$this->income->get_list_all();
+		$this->load->view($this->config->item('admin_theme').'/income/list_all',$data);
 	}
 	
 
-	public function check_exp_type($exp_type){
-		if (in_array($exp_type, array('purchase','advance','security','other'))) {
+	public function check_income_type($income_type){
+		if (in_array($income_type, array('sale','advance','security','invest','other'))) {
 			return TRUE;
 		} else {
-			$this->form_validation->set_message('check_exp_type', "Expense Type is not valid.");
+			$this->form_validation->set_message('check_income_type', "Income Type is not valid.");
 			return FALSE;
 		}
 	}

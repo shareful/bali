@@ -8,11 +8,11 @@
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
 				<header> 
-					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Expense List</h6>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Income List</h6>
 				</header>
 				<div class="form-actions">
 	                <div class="span12 center">
-	                	<a class="btn btn-success withpadding" href="#expense/save">New Expense</a>                            
+	                	<a class="btn btn-success withpadding" href="#income/save">New Income</a>                            
 	                </div>
 	                <br>
 					<div class="span12 center">
@@ -29,9 +29,9 @@
 											<th data-class="expand">Voucher #</th>
 											<th data-class="expand">Amount Tk</th>
 											<th data-class="expand">Project Name</th>
-											<th data-class="expand">Expense TYpe</th>
+											<th data-class="expand">Income Type</th>
 											<th data-class="expand">Ref/Invoice #</th>
-											<th data-class="expand">Expense Date</th>
+											<th data-class="expand">Income Date</th>
 											<th data-class="expand">Notes</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
@@ -41,18 +41,18 @@
 										<?php	
 										$c = 1;
 										$total = 1;
-										foreach ($expenses as $expense) { 
-											$total += $expense->amount;
+										foreach ($incomes as $income) { 
+											$total += $income->amount;
 										?>
-										<tr id="row-expenses-<?php echo $expense->id;?>">
+										<tr id="row-incomes-<?php echo $income->id;?>">
 											<td><?php echo $c; ?></td>
-											<td><?php echo $expense->code; ?></td>
-											<td><?php echo $expense->amount; ?></td>
-											<td><?php echo isset($expense->project) ? ($expense->project->code.' - '.$expense->project->name ) : ''; ?></td>
-											<td><?php echo ucfirst($expense->exp_type); ?></td>
-											<td><?php echo $expense->ref_code; ?></td>
-											<td><?php echo date('m/d/Y', strtotime($expense->trans_date)); ?></td>
-											<td><?php echo $expense->notes; ?></td>
+											<td><?php echo $income->code; ?></td>
+											<td><?php echo $income->amount; ?></td>
+											<td><?php echo isset($income->project) ? ($income->project->code.' - '.$income->project->name ) : ''; ?></td>
+											<td><?php echo ucfirst($income->income_type); ?></td>
+											<td><?php echo $income->ref_code; ?></td>
+											<td><?php echo date('m/d/Y', strtotime($income->trans_date)); ?></td>
+											<td><?php echo $income->notes; ?></td>
 											<td>
 											</td>
 										</tr>
@@ -88,14 +88,14 @@
 <!-- /.modal --> 
 
 <script type="text/javascript">
-	var deleteExpense=function(id){
-		if (confirm('Are you sure want to delete the Expense?')) {			
+	var deleteIncome=function(id){
+		if (confirm('Are you sure want to delete the Income?')) {			
 			var $btn = $(this);
 			$btn.val('loading');
 			$btn.attr({disabled: true});
 
 			$.ajax({
-				url : "<?php echo $this->config->item('base_url') ?>expense/delete",
+				url : "<?php echo $this->config->item('base_url') ?>income/delete",
 				type : "post",
 				dataType : "json",
 				data : 'id='+id,
@@ -103,10 +103,10 @@
 					$btn.attr({disabled: false});
 					$btn.val('Save changes');
 					if (data.success == 'true') {
-						$('#row-expenses-'+id).fadeOut().remove();
+						$('#row-incomes-'+id).fadeOut().remove();
 						$.bigBox({
 							title : "Success",
-							content : "Expense deleted.",
+							content : "Income deleted.",
 							color : "#739E73",
 							timeout: 8000,
 							icon : "fa fa-check",

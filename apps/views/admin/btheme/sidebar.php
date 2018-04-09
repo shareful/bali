@@ -20,7 +20,21 @@
 				<a href="dashboard" title="Dashboard"><i class="fa fa-lg fa-fw fa-dashboard"></i> <span class="menu-item-parent">Dashboard</span></a>
 			</li>
 			<li class="">
-				<a href="stock" title="Stock"><i class="fa fa-lg fa-fw fa-cube"></i> <span class="menu-item-parent">Stock</span></a>
+				<a href="#" title="Projects"><i class="fa fa-lg fa-fw fa-road"></i> <span class="menu-item-parent">Projects</span></a>
+				<ul>
+					<?php 
+					if (in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+					?>
+					<li class="">
+						<a href="project/save"><i class="fa fa-lg fa-fw fa-edit"></i> Add Project</a>
+					</li>
+					<?php 
+					}
+					?>
+					<li class="">
+						<a href="project"><i class="fa fa-lg fa-fw fa-list"></i> Project List</a>
+					</li>
+				</ul>
 			</li>
 			<li class="">
 				<a href="#" title="Security Payment Given"><i class="fa fa-lg fa-fw fa-arrow-up"></i> <span class="menu-item-parent">Security Pmt Given</span></a>
@@ -67,7 +81,7 @@
 				</ul>
 			</li>
 			<li class="">
-				<a href="#" title="Expenses"><i class="fa fa-lg fa-fw fa-money"></i> <span class="menu-item-parent">Expenses</span></a>
+				<a href="#" title="Expenditure"><i class="fa fa-lg fa-fw fa-money"></i> <span class="menu-item-parent">Expenditure</span></a>
 				<ul>
 					<li class="">
 						<a href="expense/save"><i class="fa fa-lg fa-fw fa-edit"></i> New Expense</a>
@@ -78,22 +92,16 @@
 				</ul>
 			</li>
 			<li class="">
-				<a href="#" title="Projects"><i class="fa fa-lg fa-fw fa-road"></i> <span class="menu-item-parent">Projects</span></a>
+				<a href="#" title="Income"><i class="fa fa-lg fa-fw fa-dollar"></i> <span class="menu-item-parent">Income</span></a>
 				<ul>
-					<?php 
-					if (in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
-					?>
 					<li class="">
-						<a href="project/save"><i class="fa fa-lg fa-fw fa-edit"></i> Add Project</a>
+						<a href="income/save"><i class="fa fa-lg fa-fw fa-edit"></i> New Income</a>
 					</li>
-					<?php 
-					}
-					?>
 					<li class="">
-						<a href="project"><i class="fa fa-lg fa-fw fa-list"></i> Project List</a>
+						<a href="income"><i class="fa fa-lg fa-fw fa-list"></i> Income List</a>
 					</li>
 				</ul>
-			</li>
+			</li>			
 			<li class="">
 				<a href="#" title="Items"><i class="fa fa-lg fa-fw fa-cubes"></i> <span class="menu-item-parent">Items</span></a>
 				<ul>
@@ -102,6 +110,32 @@
 					</li>
 					<li class="">
 						<a href="item"><i class="fa fa-lg fa-fw fa-list"></i> Item List</a>
+					</li>
+				</ul>
+			</li> 
+			<li class="">
+				<a href="#" title="Reprts"><i class="fa fa-lg fa-fw fa-file-excel-o"></i> <span class="menu-item-parent">Reprts</span></a>
+				<ul>
+					<li class="">
+						<a href="report/profit"><i class="fa fa-lg fa-fw fa-list"></i> Profit</a>
+					</li>
+					<li class="">
+						<a href="report/security_payable"><i class="fa fa-lg fa-fw fa-list"></i> Security Payable</a>
+					</li>
+					<li class="">
+						<a href="report/security_receivable"><i class="fa fa-lg fa-fw fa-list"></i> Security Receivable</a>
+					</li>
+					<li class="">
+						<a href="report/payment_payable"><i class="fa fa-lg fa-fw fa-list"></i> Payment Payable</a>
+					</li>
+					<li class="">
+						<a href="report/payment_receivable"><i class="fa fa-lg fa-fw fa-list"></i> Payment Receivable</a>
+					</li>
+					<li class="">
+						<a href="report/customer_balance"><i class="fa fa-lg fa-fw fa-list"></i> Customer Balance</a>
+					</li>
+					<li class="">
+						<a href="report/supplier_balance"><i class="fa fa-lg fa-fw fa-list"></i> Supplier Balance</a>
 					</li>
 				</ul>
 			</li> 

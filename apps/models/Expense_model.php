@@ -35,9 +35,9 @@ class Expense_model extends My_Model {
         array( 'field' => 'code', 
                'label' => 'Voucher #',
                'rules' => 'required' ),
-        array( 'field' => 'project_id',
-               'label' => 'Project',
-               'rules' => 'required' ),
+        // array( 'field' => 'project_id',
+        //        'label' => 'Project',
+        //        'rules' => 'required' ),
         array( 'field' => 'amount',
                'label' => 'Amount',
                'rules' => 'required|numeric|greater_than[0]' ),
@@ -189,4 +189,63 @@ class Expense_model extends My_Model {
 
         return $voucher_code;
     }
+
+	/**
+	 * Get total expense by filtering 
+	 * @access public
+	 * @return double
+	 */
+	public function get_total(){
+		// item by expense can be found on purchase payment only
+		if ($this->input->post('item_id')) {
+			$this->db->select('SUM(paid_amount) as total');
+			
+			$this->db->where('item_id', $this->input->post('item_id'));
+
+			if ($this->input->post('project_id')) {
+				$this->db->where('project_id', $this->input->post('project_id'));
+			}
+
+			if ($this->input->post('from_date')) {
+				$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+				$this->db->where('bill_date >=', $from_date);
+			}
+
+			if ($this->input->post('to_date')) {
+				$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+				$this->db->where('bill_date <=', $to_date);
+			}
+
+			$this->db->where('company_id', $this->session->userdata('company_id'));
+			$row = $this->db->get('purchase_master')->row();
+
+			return $row->total;
+		}
+
+		
+		$this->db->select('SUM(amount) as total');
+
+		if ($this->input->post('project_id')) {
+			$this->db->where('project_id', $this->input->post('project_id'));
+		}
+
+		if ($this->input->post('item_id')) {
+			$this->db->where('item_id', $this->input->post('item_id'));
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$this->db->where('trans_date >=', $from_date);
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$this->db->where('trans_date <=', $to_date);
+		}
+		
+		$this->db->where('company_id', $this->session->userdata('company_id'));
+		$row = $this->db->get($this->_table)->row();
+
+		return $row->total;		
+	}    
 }

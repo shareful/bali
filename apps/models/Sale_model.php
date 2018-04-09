@@ -211,6 +211,16 @@ class Sale_model extends My_Model {
 			$where['customer_id'] = $customer_id;
 		}
 
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['bill_date <='] = $to_date;
+		}
+
 
 		$result = parent::with('project')->with('customer')->with('item')->order_by($order_by, $order)->get_many_by($where);
 		return $result;
