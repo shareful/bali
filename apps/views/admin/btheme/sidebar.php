@@ -16,11 +16,11 @@
 
 	<nav>
 		<ul>
-			<li class="">
+			<!-- <li class="">
 				<a href="dashboard" title="Dashboard"><i class="fa fa-lg fa-fw fa-dashboard"></i> <span class="menu-item-parent">Dashboard</span></a>
-			</li>
-			<li class="">
-				<a href="#" title="Projects"><i class="fa fa-lg fa-fw fa-road"></i> <span class="menu-item-parent">Projects</span></a>
+			</li> -->
+			<li class="active">
+				<a href="#project" title="Projects"><i class="fa fa-lg fa-fw fa-road"></i> <span class="menu-item-parent">Projects</span></a>
 				<ul>
 					<?php 
 					if (in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
@@ -31,7 +31,7 @@
 					<?php 
 					}
 					?>
-					<li class="">
+					<li class="active">
 						<a href="project"><i class="fa fa-lg fa-fw fa-list"></i> Project List</a>
 					</li>
 				</ul>
