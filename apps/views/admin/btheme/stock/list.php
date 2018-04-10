@@ -15,8 +15,7 @@
 	                	<section class="col col-12">
 							<label class="select">
 								<b>By Project</b> 
-								<select name="project_id" id="project_id" class="span5 select12" data-placeholder="">
-									<option value="0">All</option>
+								<select name="project_id" id="project_id" class="span5 select12" data-placeholder="">									
 									<?php foreach($project_list as $key=>$project_name) {?>
 										<option value="<?php  echo $key ;?>" <?php echo $key==$project_id ? 'selected="selected"' : '' ?>><?php echo $project_name; ?></option>
 									<?php } ?>	

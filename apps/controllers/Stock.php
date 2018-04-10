@@ -44,6 +44,7 @@ class Stock extends My_Controller {
 	}
 
 	public function by_project($project_id=null){		
+		$data['project_id'] = $project_id;		
 		$data['items']=$this->itemstock->get_list_all($project_id);
 		$this->load->view($this->config->item('admin_theme').'/stock/list_only',$data);
 	}
