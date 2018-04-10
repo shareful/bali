@@ -1,4 +1,8 @@
-
+<?php
+$null_var1 = null;
+$null_var2 = null;
+$bill = sale_bill_cal_info($bill, $null_var1, $null_var2);
+?>
                         <div class="row-fluid invoice-list">
                             <div class="span4">
                                 <h4>BILLING ADDRESS</h4>
@@ -47,11 +51,10 @@
                                 <ul class="unstyled amounts">
                                     <li><strong>SUBTOTAL :</strong> <?php echo currency_format($bill->total_amount); ?></li>
                                     <?php
-                                    $grand_total = $bill->total_amount;
-                                    // if ($bill->received_amount > 0) {                                    
-                                        echo '<li><strong>PAID: </strong>'.currency_format($bill->received_amount).'</li>';      
-                                        $grand_total = $bill->total_amount - $bill->received_amount;
-                                    // }
+                                    echo '<li><strong>PAID: </strong>'.currency_format($bill->received_amount).'</li>';      
+                                    echo '<li><strong>Pament Due: </strong>'.currency_format($bill->receivable_due_amt).'</li>';      
+                                    echo '<li><strong>Security Due: </strong>'.currency_format($bill->security_due_amt).'</li>';   
+                                    $grand_total = $bill->total_amount - $bill->received_amount;
                                     ?>
                                     <li><strong>TOTAL DUE :</strong> <?php echo currency_format($grand_total); ?> </li>
                                 </ul>

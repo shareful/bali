@@ -75,20 +75,29 @@
 			<div id="content" class="container">
 
 				<div class="row">
-					<!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
-						<h1 class="txt-color-red login-header-big">bFlex</h1>
+					<div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
+						<h1 class="txt-color-red login-header-big">bContractor</h1>
 						<div class="hero" style="background-image: none;">
 
 							<div class="pull-left login-desc-box-l">
-								<h4 class="paragraph-header">bFlex makes money transfer business easy to manage and countable. </h4>
-								<div class="login-app-icons">
+								<h4 class="paragraph-header">bContractor is a set of procedures that help you to run your construction contracting business in an organized, efficient, and profitable way.  </h4>
+								<ul>
+									<li>Project Management</li>
+									<li>Items Management</li>
+									<li>Easy Billing System</li>
+									<li>Easy Advance and Security Payment Management</li>
+									<li>Simplified Expenses</li>
+									<li>Instrant Financial Report</li>
+									
+								</ul>
+								<!-- <div class="login-app-icons">
 									<a href="javascript:void(0);" class="btn btn-danger btn-sm">Contact with Bisorgo</a>
 									<a href="javascript:void(0);" class="btn btn-danger btn-sm">Find out more</a>
-								</div>
+								</div> -->
 							</div>														
 						</div>
 
-					</div> -->
+					</div>
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
 						<div class="well no-padding">
 							<form action="login" method="post" class="smart-form client-form">
