@@ -11,6 +11,35 @@
 					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Expense List</h6>
 				</header>
 				<div class="form-actions">
+					<div class="span12" style="text-align: left;">
+						<form action="report/income" method="post" class="smart-form" id="frmreport">
+							<fieldset>
+								
+								<div class="row">
+									<section class="col col-2">
+										<label for="from_date" class="control-label">From Date</label>
+									</section>
+									<section class="col col-3">	
+										<label class="input"> <i class="icon-append fa fa-calendar"></i>
+                                            <input id="from_date" type="text" name="from_date" value="">
+                                        </label>
+									</section>
+
+									<section class="col col-2">
+										<label for="to_date" class="control-label">To Date</label>
+									</section>
+									<section class="col col-3">	
+										<label class="input"> <i class="icon-append fa fa-calendar"></i>
+                                            <input id="to_date" type="text" name="to_date" value="<?php echo date("m-d-Y"); ?>">
+                                        </label>
+									</section>				
+									<section class="col col-2">
+											<input type="button" name="submit" class="btn btn-success withpadding" id="filter_report" value="Search" />
+									</section>
+								</div>
+							</fieldset>
+						</form>	                	
+	                </div>
 	                <div class="span12 center">
 	                	<a class="btn btn-success withpadding" href="#expense/save">New Expense</a>                            
 	                </div>
@@ -40,7 +69,7 @@
 										
 										<?php	
 										$c = 1;
-										$total = 1;
+										$total = 0;
 										foreach ($expenses as $expense) { 
 											$total += $expense->amount;
 										?>
@@ -144,18 +173,59 @@
 	runAllForms();
 	
 	// PAGE RELATED SCRIPTS
-		
+	var dt_basic;
 
-	$('#date').datepicker({
-		dateFormat : 'yy-mm-dd',
+	$('#from_date').datepicker({
+		dateFormat : 'mm-dd-yy',
 		prevText : '<i class="fa fa-chevron-left"></i>',
 		nextText : '<i class="fa fa-chevron-right"></i>'
 	});	
 
+	$('#to_date').datepicker({
+		dateFormat : 'mm-dd-yy',
+		prevText : '<i class="fa fa-chevron-left"></i>',
+		nextText : '<i class="fa fa-chevron-right"></i>'
+	});	
+
+	$("#filter_report").click(function(){
+		var $btn = $(this);
+	    $btn.val('loading');
+	    $btn.attr({disabled: true});
+		
+		$.ajax({
+			url : "<?php echo $this->config->item('base_url') ?>expense",
+			type : "post",
+			dataType : "json",
+			data : $("#frmreport").serialize(),
+			success : function(data) {
+				// console.log(data);
+				$btn.attr({disabled: false});
+				$btn.val('Search');
+				if (data.success == 'true') {
+					$('#dt_basic').html(data.html);
+				} 
+			},
+			error: function(){
+				$btn.attr({disabled: false});
+				$btn.val('Search');
+				$.bigBox({
+					title : "Error!",
+					content : 'Please check your connection!',
+					color : "#C46A69",
+					icon : "fa fa-warning shake animated",
+					number : "",
+					timeout : 6000
+				});
+			}
+		});
+		
+	});
+
 	pageSetUp();
+	
 	var pagefunction = function() {	
 	
-		$('#dt_basic').dataTable({
+		dt_basic = $('#dt_basic').dataTable({
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

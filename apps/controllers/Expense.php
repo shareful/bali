@@ -29,8 +29,13 @@ class Expense extends My_Controller {
 		$data['menu'] = 'list';
 		$data['expenses'] = $this->expense->get_list_all();
 		if(is_ajax()){
-			$this->load->view($this->config->item('admin_theme').'/expense/list', $data);
-			return;
+			if($this->input->method(TRUE)=='POST'){
+				$html = $this->load->view($this->config->item('admin_theme').'/expense/list_data', $data, true);
+				echo json_encode(array('success'=>'true','html'=>$html)); exit;
+			} else {				
+				$this->load->view($this->config->item('admin_theme').'/expense/list', $data);
+				return;
+			}
 		}
 
 		// $data['privileges'] = $this->privileges;

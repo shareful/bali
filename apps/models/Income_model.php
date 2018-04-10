@@ -147,6 +147,17 @@ class Income_model extends My_Model {
 	public function get_list_all(){
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['trans_date >='] = $from_date;			
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['trans_date <='] = $to_date;
+		}
+
 		// $where['deleted'] = 0;
 		$result = parent::with('project')->order_by('code', 'desc')->get_many_by($where);
 		return $result;

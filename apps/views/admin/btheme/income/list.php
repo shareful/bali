@@ -11,8 +11,37 @@
 					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Income List</h6>
 				</header>
 				<div class="form-actions">
+					<div class="span12" style="text-align: left;">
+						<form action="report/income" method="post" class="smart-form" id="frmreport">
+							<fieldset>
+								
+								<div class="row">
+									<section class="col col-2">
+										<label for="from_date" class="control-label">From Date</label>
+									</section>
+									<section class="col col-3">	
+										<label class="input"> <i class="icon-append fa fa-calendar"></i>
+                                            <input id="from_date" type="text" name="from_date" value="">
+                                        </label>
+									</section>
+
+									<section class="col col-2">
+										<label for="to_date" class="control-label">To Date</label>
+									</section>
+									<section class="col col-3">	
+										<label class="input"> <i class="icon-append fa fa-calendar"></i>
+                                            <input id="to_date" type="text" name="to_date" value="<?php echo date("m-d-Y"); ?>">
+                                        </label>
+									</section>				
+									<section class="col col-2">
+											<input type="button" name="submit" class="btn btn-success withpadding" id="filter_report" value="Search" />
+									</section>
+								</div>
+							</fieldset>
+						</form>	                	
+	                </div>
 	                <div class="span12 center">
-	                	<a class="btn btn-success withpadding" href="#income/save">New Income</a>                            
+	                	<a class="btn btn-success withpadding" href="#income/save">New Income</a>
 	                </div>
 	                <br>
 					<div class="span12 center">
@@ -23,50 +52,7 @@
 						<div class="widget-body no-padding">
 							<div class="table-responsive">
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-									<thead>
-										<tr>
-											<th data-class="expand">SN</th>
-											<th data-class="expand">Voucher #</th>
-											<th data-class="expand">Amount Tk</th>
-											<th data-class="expand">Project Name</th>
-											<th data-class="expand">Income Type</th>
-											<th data-class="expand">Ref/Invoice #</th>
-											<th data-class="expand">Income Date</th>
-											<th data-class="expand">Notes</th>
-											<th style="text-align: center;">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										
-										<?php	
-										$c = 1;
-										$total = 1;
-										foreach ($incomes as $income) { 
-											$total += $income->amount;
-										?>
-										<tr id="row-incomes-<?php echo $income->id;?>">
-											<td><?php echo $c; ?></td>
-											<td><?php echo $income->code; ?></td>
-											<td><?php echo $income->amount; ?></td>
-											<td><?php echo isset($income->project) ? ($income->project->code.' - '.$income->project->name ) : ''; ?></td>
-											<td><?php echo ucfirst($income->income_type); ?></td>
-											<td><?php echo $income->ref_code; ?></td>
-											<td><?php echo date('m/d/Y', strtotime($income->trans_date)); ?></td>
-											<td><?php echo $income->notes; ?></td>
-											<td>
-											</td>
-										</tr>
-										<?php 
-											$c++;
-										} 
-										?>
-									</tbody>
-									<tfoot>
-										<tr>
-											<th colspan="2" style="text-align: right; ">TOTAL</th>
-											<th colspan="7" style="text-align: left;"><?php echo number_format($total, 2, '.', '') ?> Tk</th>
-										</tr>
-									</tfoot>
+									<?php $this->load->view($admin_theme.'/income/list_data', array('incomes' => $incomes )); ?>
 								</table>
 							</div>
 						</div>
@@ -146,11 +132,51 @@
 	// PAGE RELATED SCRIPTS
 		
 
-	$('#date').datepicker({
-		dateFormat : 'yy-mm-dd',
+	$('#from_date').datepicker({
+		dateFormat : 'mm-dd-yy',
 		prevText : '<i class="fa fa-chevron-left"></i>',
 		nextText : '<i class="fa fa-chevron-right"></i>'
 	});	
+
+	$('#to_date').datepicker({
+		dateFormat : 'mm-dd-yy',
+		prevText : '<i class="fa fa-chevron-left"></i>',
+		nextText : '<i class="fa fa-chevron-right"></i>'
+	});	
+
+	$("#filter_report").click(function(){
+		var $btn = $(this);
+	    $btn.val('loading');
+	    $btn.attr({disabled: true});
+		
+		$.ajax({
+			url : "<?php echo $this->config->item('base_url') ?>income",
+			type : "post",
+			dataType : "json",
+			data : $("#frmreport").serialize(),
+			success : function(data) {
+				// console.log(data);
+				$btn.attr({disabled: false});
+				$btn.val('Search');
+				if (data.success == 'true') {
+					$('#dt_basic').html(data.html);
+				} 
+			},
+			error: function(){
+				$btn.attr({disabled: false});
+				$btn.val('Search');
+				$.bigBox({
+					title : "Error!",
+					content : 'Please check your connection!',
+					color : "#C46A69",
+					icon : "fa fa-warning shake animated",
+					number : "",
+					timeout : 6000
+				});
+			}
+		});
+		
+	});
 
 	pageSetUp();
 	var pagefunction = function() {	
