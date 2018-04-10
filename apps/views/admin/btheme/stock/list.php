@@ -38,8 +38,10 @@
 											<th data-class="expand">Code</th>
 											<th data-class="expand">Item Name</th>
 											<th data-class="expand">Project</th>
-											<th data-class="expand">Stock</th>
-											<th style="text-align: center;">Action</th>
+											<th data-class="expand">Stock Received</th>
+											<th data-class="expand">Stock Billed</th>
+											<th data-class="expand">Pending to Bill</th>
+											<th>Action</th>
 										</tr>
 									</thead>
 									<tbody id="stock_list_body">

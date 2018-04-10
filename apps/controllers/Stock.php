@@ -32,6 +32,17 @@ class Stock extends My_Controller {
 		$data['items'] = $this->itemstock->get_list_all($project_id);
 		$data['project_list'] = $this->project->get_option_list();
 		$data['project_id'] = $project_id;
+
+		foreach ($data['items'] as $key => $item) {
+			$billed = $this->itembilled->get_item($item->item_id, $project_id);
+			if(!empty($billed)){
+				$item->billed = $billed->billed;
+			} else {
+				$item->billed = 0;
+			}
+			$data['items'][$key] = $item;
+		}
+		
 		if(is_ajax()){
 			$this->load->view($this->config->item('admin_theme').'/stock/list', $data);
 			return;
@@ -46,6 +57,17 @@ class Stock extends My_Controller {
 	public function by_project($project_id=null){		
 		$data['project_id'] = $project_id;		
 		$data['items']=$this->itemstock->get_list_all($project_id);
+
+		foreach ($data['items'] as $key => $item) {
+			$billed = $this->itembilled->get_item($item->item_id, $project_id);
+			if(!empty($billed)){
+				$item->billed = $billed->billed;
+			} else {
+				$item->billed = 0;
+			}
+			$data['items'][$key] = $item;
+		}
+
 		$this->load->view($this->config->item('admin_theme').'/stock/list_only',$data);
 	}
 
