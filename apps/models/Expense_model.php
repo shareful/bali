@@ -217,9 +217,8 @@ class Expense_model extends My_Model {
 			}
 
 			$this->db->where('company_id', $this->session->userdata('company_id'));
-			$row = $this->db->get('purchase_master')->row();
-
-			return $row->total;
+			
+			return $this->db->get('purchase_master')->row()->total;
 		}
 
 		
@@ -228,7 +227,7 @@ class Expense_model extends My_Model {
 		if ($this->input->post('project_id')) {
 			$this->db->where('project_id', $this->input->post('project_id'));
 		}
-		
+
 		if ($this->input->post('from_date')) {
 			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
 			$this->db->where('trans_date >=', $from_date);
@@ -240,9 +239,8 @@ class Expense_model extends My_Model {
 		}
 		
 		$this->db->where('company_id', $this->session->userdata('company_id'));
-		$row = $this->db->get($this->_table)->row();
 
-		return $row->total;		
+		return $this->db->get($this->_table)->row()->total;
 	}
 
 	/**
@@ -270,8 +268,7 @@ class Expense_model extends My_Model {
 
 		if($this->input->post('item_id')){
 			$this->db->where('purchase_master.item_id', $this->input->post('item_id'));
-		}
-			
+		}			
 
 		if ($this->input->post('from_date')) {
 			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
@@ -284,10 +281,7 @@ class Expense_model extends My_Model {
 		}
 		
 		$this->db->where($this->_table.'.company_id', $this->session->userdata('company_id'));
-		$row = $this->db->get($this->_table)->row();
-
-		// echo $this->db->last_query(); exit();
-
-		return $row->total;		
+		
+		return $this->db->get($this->_table)->row()->total;		
 	}
 }
