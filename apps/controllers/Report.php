@@ -25,7 +25,11 @@ class Report extends My_Controller {
 		$this->load->model('customer_model','customer');		
 		$this->load->model('supplier_model','supplier');		
 		$this->load->model('purchase_model','purchase');		
-		$this->load->model('sale_model','sale');		
+		$this->load->model('sale_model','sale');	
+		$this->load->model('advancetaken_model','advancetaken');	
+		$this->load->model('securitytaken_model','securitytaken');		
+		$this->load->model('advancegiven_model','advancegiven');	
+		$this->load->model('securitygiven_model','securitygiven');		
 	}
 	
 	public function profit()
@@ -204,4 +208,95 @@ class Report extends My_Controller {
 		$this->load->view($this->config->item('admin_theme').'/template', $data);
 	}
 
+	function customer_balance(){
+		$data['title'] = $this->config->item('company_name');
+		$data['menu'] = 'list';
+		$data['customers'] = $this->customer->get_list_all();
+		$data['projects'] = $this->project->get_list_all();
+		$data['items'] = $this->item->get_list_all();
+		
+		if($this->input->post('customer_id')){
+			$data['customer_id'] = $this->input->post('customer_id');
+
+			// Total Receivable
+			$bill_amount = array();
+			$bill_amount['total'] = $this->sale->get_total_bill($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'));
+			$bill_amount['receivable'] = $this->sale->get_total_receivable($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'));
+			$bill_amount['security'] = $this->sale->get_total_security_receivable($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'));
+
+			// Amount Received
+			$received_amount = array();
+			$received_amount['sale'] = $this->income->get_sale_total($this->input->post('customer_id'));
+			$received_amount['advance'] = $this->advancetaken->get_total_taken($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'));
+			$received_amount['security'] = $this->securitytaken->get_total_taken($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'));
+
+			// Total Amount Received
+			$received_amount['total'] = $received_amount['sale']+$received_amount['advance']+$received_amount['security'];
+
+			$data['bill_amount'] = $bill_amount;
+			$data['received_amount'] = $received_amount;
+
+			// balance
+			$data['balance'] = $bill_amount['total'] - $received_amount['total'];
+
+			// Output
+			$html = $this->load->view($this->config->item('admin_theme').'/report/customer_balance_data', $data, true);
+			echo json_encode(array('success'=>'true','html'=>$html)); exit;
+		} 
+
+		if(is_ajax()){							
+			$this->load->view($this->config->item('admin_theme').'/report/customer_balance', $data);
+			return;		
+		}
+
+		// $data['privileges'] = $this->privileges;
+		$data['content'] = $this->config->item('admin_theme').'/report/customer_balance';
+		$this->load->view($this->config->item('admin_theme').'/template', $data);		
+	}
+
+	function supplier_balance(){
+		$data['title'] = $this->config->item('company_name');
+		$data['menu'] = 'list';
+		$data['suppliers'] = $this->supplier->get_list_all();
+		$data['projects'] = $this->project->get_list_all();
+		$data['items'] = $this->item->get_list_all();
+		
+		if($this->input->post('supplier_id')){
+			$data['supplier_id'] = $this->input->post('supplier_id');
+
+			// Total Receivable
+			$bill_amount = array();
+			$bill_amount['total'] = $this->purchase->get_total_bill($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'));
+			$bill_amount['payable'] = $this->purchase->get_total_payable($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'));
+			$bill_amount['security'] = $this->purchase->get_total_security_payable($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'));
+
+			// Amount Received
+			$paid_amount = array();
+			$paid_amount['purchase'] = $this->expense->get_purchase_total($this->input->post('supplier_id'));
+			$paid_amount['advance'] = $this->advancegiven->get_total_given($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'));
+			$paid_amount['security'] = $this->securitygiven->get_total_given($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'));
+
+			// Total Amount Received
+			$paid_amount['total'] = $paid_amount['purchase']+$paid_amount['advance']+$paid_amount['security'];
+
+			$data['bill_amount'] = $bill_amount;
+			$data['paid_amount'] = $paid_amount;
+
+			// balance
+			$data['balance'] = $bill_amount['total'] - $paid_amount['total'];
+
+			// Output
+			$html = $this->load->view($this->config->item('admin_theme').'/report/supplier_balance_data', $data, true);
+			echo json_encode(array('success'=>'true','html'=>$html)); exit;
+		} 
+
+		if(is_ajax()){							
+			$this->load->view($this->config->item('admin_theme').'/report/supplier_balance', $data);
+			return;		
+		}
+
+		// $data['privileges'] = $this->privileges;
+		$data['content'] = $this->config->item('admin_theme').'/report/supplier_balance';
+		$this->load->view($this->config->item('admin_theme').'/template', $data);		
+	}
 }

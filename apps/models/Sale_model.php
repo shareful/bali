@@ -227,6 +227,108 @@ class Sale_model extends My_Model {
 	}
 
 	/**
+	 * Get total bill amount 
+	 * @access public
+	 * @return double
+	 */
+	public function get_total_bill($project_id=null, $item_id=null, $customer_id=null, $where=array(), $order_by='code', $order='desc'){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+		if ($project_id) {
+			$where['project_id'] = $project_id;
+		}
+		if ($item_id) {
+			$where['item_id'] = $item_id;
+		}
+
+		if ($customer_id) {
+			$where['customer_id'] = $customer_id;
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['bill_date <='] = $to_date;
+		}
+
+		$this->db->select('SUM(total_amount) as total');
+		$this->db->where($where);
+		return $this->db->get($this->_table)->row()->total;		
+	}
+
+	/**
+	 * Get total bill amount 
+	 * @access public
+	 * @return double
+	 */
+	public function get_total_receivable($project_id=null, $item_id=null, $customer_id=null, $where=array(), $order_by='code', $order='desc'){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+		if ($project_id) {
+			$where['project_id'] = $project_id;
+		}
+		if ($item_id) {
+			$where['item_id'] = $item_id;
+		}
+
+		if ($customer_id) {
+			$where['customer_id'] = $customer_id;
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['bill_date <='] = $to_date;
+		}
+
+		$this->db->select('SUM(receivable_amount) as total');
+		$this->db->where($where);
+		return $this->db->get($this->_table)->row()->total;		
+	}
+
+	/**
+	 * Get total bill amount 
+	 * @access public
+	 * @return double
+	 */
+	public function get_total_security_receivable($project_id=null, $item_id=null, $customer_id=null, $where=array(), $order_by='code', $order='desc'){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+		if ($project_id) {
+			$where['project_id'] = $project_id;
+		}
+		if ($item_id) {
+			$where['item_id'] = $item_id;
+		}
+
+		if ($customer_id) {
+			$where['customer_id'] = $customer_id;
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['bill_date <='] = $to_date;
+		}
+
+		$this->db->select('SUM(security_amount) as total');
+		$this->db->where($where);
+		return $this->db->get($this->_table)->row()->total;		
+	}
+
+	/**
 	 * Get last created item to get the code.
 	 * @access public
 	 * @return array

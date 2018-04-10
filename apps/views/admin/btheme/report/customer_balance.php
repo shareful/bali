@@ -4,7 +4,7 @@
 ?>
 <div class="row">
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-file-excel-o"></i> Report <span>> Profit</span></h1>
+		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-file-excel-o"></i> Report <span>> Customer Balance</span></h1>
 	</div>
 	
 </div>
@@ -29,9 +29,24 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 						
-						<form action="report/profit" method="post" class="smart-form" id="frmreport">
+						<form action="report/customer_balance" method="post" class="smart-form" id="frmreport">
 							<fieldset>
 								<legend>Filter</legend>
+								<div class="row">
+									<section class="col col-2">
+										<label for="customer_id" class="control-label">Select Customer</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="customer_id" id="customer_id" tabindex="3" class="span5 select2">
+	                                            <option value=""></option>
+	                                            <?php foreach ($customers as $customer) { ?>
+	                                                <option value="<?php echo $customer->customer_id; ?>"><?php echo $customer->code . ' - ' . $customer->name; ?></option>
+	                                            <?php } ?>
+                                        	</select>
+										</label>
+									</section>
+								</div>
 								<div class="row">
 									<section class="col col-2">
 										<label for="project_id" class="control-label">Select Project</label>
@@ -106,7 +121,7 @@
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
 				<header> 
-					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Profit Report</h6>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Customer Balance Report</h6>
 				</header>
 				<div class="form-actions">
 	                <div class="span12 center">
@@ -117,13 +132,17 @@
 								<table class="table table-striped table-bordered table-hover display compact" cellspacing="0"  width="100%">
 									<thead>
 										<tr>
-	                                        <th>Income</th>
-	                                        <th>Expense</th>
-	                                        <th>Profit</th>             
+	                                        <th>Bill Amount</th>
+	                                        <th>Received</th>
+	                                        <th></th>             
 	                                    </tr>										
 									</thead>
 									<tbody id="itemGrid">
-										<?php $this->load->view($admin_theme.'/report/profit_data', array('income_amount' => $income_amount, 'expense_amount'=> $expense_amount, 'profit_amount'=>$profit_amount )); ?>
+										<?php 
+											if (isset($customer_id)) {
+												$this->load->view($admin_theme.'/report/customer_balance_data', array('bill_amount' => $bill_amount, 'received_amount'=> $received_amount, 'balance'=>$balance )); 
+											}
+										?>
 	                                </tbody>
 									
 								</table>
@@ -153,12 +172,26 @@
     }); 
 
     $("#filter_report").click(function(){
+    	if ($('#customer_id').val() != '') {
+
+    	} else {
+    		$.bigBox({
+				title : "Validaton Error!",
+				content : 'Please select customer!',
+				color : "#C46A69",
+				icon : "fa fa-warning shake animated",
+				number : "",
+				timeout : 2000
+			});
+			return;
+    	}
+
 		var $btn = $(this);
 	    $btn.val('loading');
 	    $btn.attr({disabled: true});
 		
 		$.ajax({
-			url : "<?php echo $this->config->item('base_url') ?>report/profit",
+			url : "<?php echo $this->config->item('base_url') ?>report/customer_balance",
 			type : "post",
 			dataType : "json",
 			data : $("#frmreport").serialize(),

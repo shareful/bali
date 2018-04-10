@@ -190,6 +190,39 @@ class Advancegiven_model extends My_Model {
 	}
 
 	/**
+	 * Get total amount given as advance 
+	 * @access public
+	 * @return array
+	 */
+	public function get_total_given($project_id=null, $item_id= null, $supplier_id=null){
+		$where = array();
+		$where['deleted'] = 0;
+		$where['company_id'] = $this->session->userdata('company_id');
+		if ($project_id) {
+			$where['project_id'] = $project_id;
+		}
+		if ($item_id) {			
+			$where['item_id'] = $item_id;
+		}
+		if ($supplier_id) {
+			$where['supplier_id'] = $supplier_id;
+		}
+
+		$this->db->select('SUM(amount) as total');
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$this->db->where('trans_date >=', $from_date);
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$this->db->where('trans_date <=', $to_date);
+		}
+		$this->db->where($where);
+		return $this->db->get($this->_table)->row()->total;				
+	}
+
+	/**
 	 * Get last created project to get the code.
 	 * @access public
 	 * @return array

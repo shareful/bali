@@ -228,11 +228,7 @@ class Expense_model extends My_Model {
 		if ($this->input->post('project_id')) {
 			$this->db->where('project_id', $this->input->post('project_id'));
 		}
-
-		if ($this->input->post('item_id')) {
-			$this->db->where('item_id', $this->input->post('item_id'));
-		}
-
+		
 		if ($this->input->post('from_date')) {
 			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
 			$this->db->where('trans_date >=', $from_date);
@@ -247,5 +243,51 @@ class Expense_model extends My_Model {
 		$row = $this->db->get($this->_table)->row();
 
 		return $row->total;		
-	}    
+	}
+
+	/**
+	 * Get total income by filtering 
+	 * @access public
+	 * @return double
+	 */
+	public function get_purchase_total($supplier_id=null){
+
+		$this->db->select('SUM(amount) as total');
+
+		$this->db->join('purchase_master', 'purchase_master.id='.$this->_table.'.ref_id');
+
+		$this->db->where('exp_type', 'purchase');
+		
+		if ($this->input->post('project_id')) {
+			$this->db->where('purchase_master.project_id', $this->input->post('project_id'));
+		}
+
+		if ($supplier_id) {
+			$this->db->where('purchase_master.supplier_id', $supplier_id);
+		} else if($this->input->post('supplier_id')){
+			$this->db->where('purchase_master.supplier_id', $this->input->post('supplier_id'));
+		}
+
+		if($this->input->post('item_id')){
+			$this->db->where('purchase_master.item_id', $this->input->post('item_id'));
+		}
+			
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$this->db->where('trans_date >=', $from_date);
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$this->db->where('trans_date <=', $to_date);
+		}
+		
+		$this->db->where($this->_table.'.company_id', $this->session->userdata('company_id'));
+		$row = $this->db->get($this->_table)->row();
+
+		// echo $this->db->last_query(); exit();
+
+		return $row->total;		
+	}
 }
