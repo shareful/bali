@@ -181,4 +181,33 @@ class Sale extends My_Controller {
 
         echo json_encode(array('success'=>'true','code'=>$code)); exit;
 	}
+
+	public function delete(){
+		// ONly Super admin can delete bill
+		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+			show_404();
+			return;
+		}
+
+		if ($this->input->post()) {
+			if ($id=$this->input->post('id')){
+				$bill = $this->sale->get_by(array('id'=>$id,'company_id'=>$this->session->userdata('company_id')));
+				if (empty($bill)) {
+					echo json_encode(array('success'=>'false','error'=>"Bill not found.")); exit;
+				}
+				
+				if ($bill->received_amount > 0) {
+					echo json_encode(array('success'=>'false','error'=>"You can't delete this bill. Because {$bill->received_amount} tk already received against this bill.")); exit;
+				}
+
+				if($this->sale->delete($id)){		
+					echo json_encode(array('success'=>'true','msg'=>"Bill has been Deleted.")); exit;
+				}
+				else{
+					echo json_encode(array('success'=>'false','error'=>"Can't delete this Bill.")); exit;
+				}
+			} 
+
+		}		
+	}
 }

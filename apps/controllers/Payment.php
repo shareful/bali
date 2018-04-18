@@ -134,7 +134,7 @@ class Payment extends My_Controller {
 		$bill_id = $this->input->post('bill_id');
 		$bill = $this->purchase->get_one($bill_id);
 		
-		if ($paid_amount < ($bill->total_amount - $bill->paid_amount)) {
+		if ($paid_amount <= ($bill->total_amount - $bill->paid_amount)) {
 			return TRUE;
 		} else {
 			$this->form_validation->set_message('check_paid_amount', "Paid amount can't be greater then Due Amount.");
@@ -250,7 +250,7 @@ class Payment extends My_Controller {
 		$bill_id = $this->input->post('bill_id');
 		$bill = $this->sale->get_one($bill_id);
 		
-		if ($received_amount < ($bill->total_amount - $bill->received_amount)) {
+		if ($received_amount <= ($bill->total_amount - $bill->received_amount)) {
 			return TRUE;
 		} else {
 			$this->form_validation->set_message('check_received_amount', "Paid amount can't be greater then Due Amount.");

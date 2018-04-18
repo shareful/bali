@@ -88,8 +88,22 @@
 												?>
 											</td>
 											<td>
-												<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Make </a>
+												<?php
+												if ($bill->is_sec_due OR $bill->is_payment_due){
+												?> 
+													<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Make </a>
+												<?php
+												}
+												?>
 												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="payment/p_ledger/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Payments </a>
+												<?php
+												if ($bill->paid_amount==0) {
+												?>
+													&nbsp;&nbsp;&nbsp;
+													<button class="btn btn-danger del" onclick="deleteBill(<?php echo $bill->id;?>, this)" ><i class="fa fa-lg fa-fw fa-trash"></i></button>
+												<?php
+												}
+												?>
 											</td>
 										</tr>
 										<?php 
@@ -118,10 +132,10 @@
 <!-- /.modal --> 
 
 <script type="text/javascript">
-	var deletePurchase=function(id){
-		if (confirm('Are you sure want to delete the Purchase?')) {			
-			var $btn = $(this);
-			$btn.val('loading');
+	var deleteBill=function(id, btn){
+		if (confirm('Are you sure want to delete the Bill?')) {			
+			var $btn = $(btn);
+			// $btn.val('loading');
 			$btn.attr({disabled: true});
 
 			$.ajax({
@@ -131,12 +145,12 @@
 				data : 'id='+id,
 				success : function(data) {
 					$btn.attr({disabled: false});
-					$btn.val('Save changes');
+					// $btn.val('Save changes');
 					if (data.success == 'true') {
 						$('#row-purchases-'+id).fadeOut().remove();
 						$.bigBox({
 							title : "Success",
-							content : "Purchase deleted.",
+							content : "Purchase Bill deleted.",
 							color : "#739E73",
 							timeout: 8000,
 							icon : "fa fa-check",
@@ -156,7 +170,7 @@
 				},
 				error: function(){
 					$btn.attr({disabled: false});
-					$btn.val('Save changes');
+					// $btn.val('Save changes');
 					$.bigBox({
 						title : "Error!",
 						content : data.error,
