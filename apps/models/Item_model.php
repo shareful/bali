@@ -136,6 +136,9 @@ class Item_model extends My_Model {
 	}
 
 	public function get_option_list($where = array()){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+		
 		if (!empty($where)) {
 			$this->db->where($where);
 		}
