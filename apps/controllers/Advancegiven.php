@@ -255,4 +255,33 @@ class Advancegiven extends My_Controller {
 		}
 		$this->load->view($this->config->item('admin_theme').'/advancegiven/adjust_ledger', $data);
 	}
+
+	public function delete(){
+		// ONly Super admin can dele customer
+		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+			show_404();
+			return;
+		}
+
+		if ($this->input->post()) {
+			if ($id=$this->input->post('id')){
+				$advance_payment = $this->advancegiven->get($id);
+				if (empty($advance_payment)) {
+					echo json_encode(array('success'=>'false','error'=>"Advance Given Payment not found.")); exit;
+				}
+				
+				if ($advance_payment->amount_adjusted > 0) {
+					echo json_encode(array('success'=>'false','error'=>"You can't delete this Advance Given Payment. Because {$advance_payment->amount_adjusted} tk already adjusted to bill.")); exit;
+				}
+
+				if($this->advancegiven->delete_payment($id)){		
+					echo json_encode(array('success'=>'true','msg'=>"Advance Given has been Deleted.")); exit;
+				}
+				else{
+					echo json_encode(array('success'=>'false','error'=>"Can't delete this Advance Given.")); exit;
+				}
+			} 
+
+		}		
+	}
 }

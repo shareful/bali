@@ -266,4 +266,33 @@ class Advancegiven_model extends My_Model {
 		$this->db->update($this->_table);	
 	}
 
+	public function delete_payment($id){
+  		$advance_payment = $this->get($id);
+  		if (empty($advance_payment)) {
+  			return false;
+  		}
+  		if ($advance_payment->amount_adjusted > 0) {
+  			return false;
+  		}
+
+  		$this->db->trans_start();
+
+
+  		$this->db->where('id', $id);
+  		$this->db->where('company_id', $this->session->userdata('company_id'));
+  		$this->db->delete($this->_table);
+  		if($this->db->affected_rows() > 0){
+	  		$this->db->where('exp_type', 'advance');
+	  		$this->db->where('ref_id', $id);
+	  		$this->db->delete('expense');
+  		}
+
+  		$this->db->trans_complete();
+
+  		if($this->db->trans_status() === TRUE){
+  			return true;
+  		} else {
+  			return false;
+  		}
+	}
 }

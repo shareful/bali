@@ -267,4 +267,34 @@ class Securitygiven_model extends My_Model {
 		$this->db->update($this->_table);	
 	}
 
+  	public function delete_payment($id){
+  		$sec_payment = $this->get($id);
+  		if (empty($sec_payment)) {
+  			return false;
+  		}
+  		if ($sec_payment->amount_adjusted > 0) {
+  			return false;
+  		}
+
+  		$this->db->trans_start();
+
+
+  		$this->db->where('id', $id);
+  		$this->db->where('company_id', $this->session->userdata('company_id'));
+  		$this->db->delete($this->_table);
+  		if($this->db->affected_rows() > 0){
+	  		$this->db->where('exp_type', 'security');
+	  		$this->db->where('ref_id', $id);
+	  		$this->db->delete('expense');
+  		}
+
+  		$this->db->trans_complete();
+
+  		if($this->db->trans_status() === TRUE){
+  			return true;
+  		} else {
+  			return false;
+  		}
+	}
+
 }

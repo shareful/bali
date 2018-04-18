@@ -59,6 +59,8 @@
 												
 												<a class="btn btn-edit" href="#securitygiven/adjust/<?php echo $record->id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Adjust</a>
 												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="securitygiven/ledger/<?php echo $record->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Adjustments </a>
+												&nbsp;&nbsp;&nbsp;
+												<button class="btn btn-danger del" onclick="deleteSecurity(<?php echo $record->id;?>, this)" ><i class="fa fa-lg fa-fw fa-trash"></i></button>
 											</td>
 										</tr>
 										<?php 
@@ -87,25 +89,25 @@
 <!-- /.modal --> 
 
 <script type="text/javascript">
-	var deleteCustomer=function(id){
-		if (confirm('Are you sure want to delete the Customer?')) {			
-			var $btn = $(this);
-			$btn.val('loading');
+	var deleteSecurity=function(id, btn){
+		if (confirm('Are you sure want to delete the Security Given Payment?')) {			
+			var $btn = $(btn);
+			// $btn.val('loading');
 			$btn.attr({disabled: true});
 
 			$.ajax({
-				url : "<?php echo $this->config->item('base_url') ?>customer/delete",
+				url : "<?php echo $this->config->item('base_url') ?>securitygiven/delete",
 				type : "post",
 				dataType : "json",
 				data : 'id='+id,
 				success : function(data) {
 					$btn.attr({disabled: false});
-					$btn.val('Save changes');
+					// $btn.val('Save changes');
 					if (data.success == 'true') {
 						$('#row-records-'+id).fadeOut().remove();
 						$.bigBox({
 							title : "Success",
-							content : "Customer deleted.",
+							content : "Security Given Payment deleted.",
 							color : "#739E73",
 							timeout: 8000,
 							icon : "fa fa-check",
@@ -125,7 +127,7 @@
 				},
 				error: function(){
 					$btn.attr({disabled: false});
-					$btn.val('Save changes');
+					// $btn.val('Save changes');
 					$.bigBox({
 						title : "Error!",
 						content : data.error,

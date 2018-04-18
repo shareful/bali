@@ -258,4 +258,33 @@ class Securitygiven extends My_Controller {
 		}
 		$this->load->view($this->config->item('admin_theme').'/securitygiven/adjust_ledger', $data);
 	}
+
+	public function delete(){
+		// ONly Super admin can dele customer
+		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+			show_404();
+			return;
+		}
+
+		if ($this->input->post()) {
+			if ($id=$this->input->post('id')){
+				$sec_payment = $this->securitygiven->get($id);
+				if (empty($sec_payment)) {
+					echo json_encode(array('success'=>'false','error'=>"Security Given Payment not found.")); exit;
+				}
+				
+				if ($sec_payment->amount_adjusted > 0) {
+					echo json_encode(array('success'=>'false','error'=>"You can't delete this Security Given Payment. Because {$sec_payment->amount_adjusted} tk already adjusted to bill.")); exit;
+				}
+
+				if($this->securitygiven->delete_payment($id)){		
+					echo json_encode(array('success'=>'true','msg'=>"Security Given has been Deleted.")); exit;
+				}
+				else{
+					echo json_encode(array('success'=>'false','error'=>"Can't delete this Security Given.")); exit;
+				}
+			} 
+
+		}		
+	}
 }
