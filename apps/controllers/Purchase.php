@@ -164,7 +164,7 @@ class Purchase extends My_Controller {
 		$quantity = $this->input->post('quantity');
 
 		$total = round($quantity*$price, 2);
-		if ($paid_amount < $total) {
+		if ($paid_amount <= $total) {
 			return TRUE;
 		} else {
 			$this->form_validation->set_message('check_paid_amount', "Paid amount can't be greater then total amount.");
@@ -174,19 +174,6 @@ class Purchase extends My_Controller {
 	
 	public function get_bill_no($item_id, $project_id, $supplier_id){
 		$code = $this->purchase->get_new_code($project_id, $supplier_id, $item_id, true);
-		/*$bill = $this->purchase->get_latest($project_id, $supplier_id, $item_id);
-		$code = '';
-        if (count($bill) > 0)
-        {
-            $code = $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.((int)$bill->code + 1);
-        }
-        else
-        {
-        	$item = $this->item->get($item_id);
-        	$project = $this->project->get($project_id);
-        	$supplier = $this->supplier->get($supplier_id);
-            $code = $project->code.'-'.$supplier->code.'-'.$item->code.'-'.'0001';
-        }*/
 
         echo json_encode(array('success'=>'true','code'=>$code)); exit;
 	}
