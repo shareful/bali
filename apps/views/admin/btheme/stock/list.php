@@ -12,16 +12,30 @@
 				</header>
 				<div class="form-actions">
 	                <div class="span12" style="text-align: left;">
-	                	<section class="col col-12">
-							<label class="select">
-								<b>By Project</b> 
-								<select name="project_id" id="project_id" class="span5 select12" data-placeholder="">									
-									<?php foreach($project_list as $key=>$project_name) {?>
-										<option value="<?php  echo $key ;?>" <?php echo $key==$project_id ? 'selected="selected"' : '' ?>><?php echo $project_name; ?></option>
-									<?php } ?>	
-									</select> 
-							</label> 
-						</section>      
+	                	<form class="smart-form" id="frmItem">
+		                	<fieldset>
+			                	<div class="row">
+			                		<section class="col col-2">
+										<label class="label">By Project</label>
+									</section>
+									<section class="col col-4">
+										<label class="select">
+											<select name="project_id" id="project_id" class="span5 chzn-select" data-placeholder="Select Project">
+												<?php foreach($project_list as $key=>$project_name) {?>
+													<option value="<?php  echo $key ;?>" <?php echo $key==$project_id ? 'selected="selected"' : '' ?>><?php echo $project_name; ?></option>
+												<?php } ?>	
+											</select> <i></i>
+										</label>
+									</section>	
+			                		
+									<section class="col col-6">
+										<div class="center">
+						                	<a class="btn btn-success withpadding" href="#project/add_item/<?php echo $project_id?>" id="add_item_to_project">Add Item to This Project</a>                            
+						                </div>     
+					            	</section>
+				            	</div>
+			            	</fieldset>
+		            	</form>
 	                </div>
 	                <br>
 					<div class="span12 center">
@@ -96,7 +110,11 @@
 	runAllForms();
 	
 	// PAGE RELATED SCRIPTS
-		
+	
+	$("#project_id").change(function(){
+		var project_id = $(this).val();
+		$('#add_item_to_project').attr({'href': '#project/add_item/'+project_id});
+	});
 
 	/*$('#date').datepicker({
 		dateFormat : 'yy-mm-dd',

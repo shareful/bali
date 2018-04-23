@@ -18,6 +18,13 @@ class Project_model extends My_Model {
 	protected $soft_delete = true;
 	protected $soft_delete_key = 'deleted';
 	
+
+	protected $has_many = array(
+			'item'=>array(
+				'model'=>'projectitem_model',
+				'primary_key'=>'item_id',
+			)
+		);	
 	
 	/**
 	 * User Table form validation rules

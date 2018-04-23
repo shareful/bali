@@ -19,6 +19,7 @@ class Project extends My_Controller {
 		// }
 
 		$this->load->model('project_model','project');		
+		$this->load->model('projectitem_model','projectitem');		
 	}
 	
 	public function index()
@@ -150,6 +151,50 @@ class Project extends My_Controller {
 		// $this->project->delete_by_id($id);
 		$data['projects']=$this->project->get_list_all();
 		$this->load->view($this->config->item('admin_theme').'/project/list_all',$data);
+	}
+
+	public function add_item($id=null){
+		// ONly Super admin can create new project
+		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+			show_404();
+			return;
+		}
+
+		if($this->input->post()){
+			$this->form_validation->set_rules($this->projectitem->validate);
+			if ($this->form_validation->run()==FALSE) {
+				echo json_encode(array("error"=>$this->form_validation->error_String()));
+			}
+			else
+			{
+				if($this->projectitem->is_item_exist($id, $this->input->post('item_id'))){
+					echo json_encode(array('success'=>'false','error'=>'Item already added to this project.')); exit;
+				} else {
+					$this->assignPostData($this->projectitem);
+					$new_id = $this->projectitem->insert();
+
+					if ($new_id) {       
+						echo json_encode(array('success'=>'true','error'=>"Item has been added to the project.")); exit;
+					}
+					else{
+						echo json_encode(array('success'=>'false','error'=>"Data didn't save.")); exit;
+					}
+				}
+			}
+		} else {
+
+			$data['title'] = $this->config->item('company_name');
+			$data['menu'] = 'project';
+			$data['items'] = $this->projectitem->get_items_not_added($id);
+			$data['project']=$this->project->get($id);
+			
+			if(is_ajax()){
+	            $this->load->view($this->config->item('admin_theme').'/project/add_item', $data);
+	            return;
+	        }
+	        $data['content'] = $this->config->item('admin_theme').'/project/add_item';
+	        $this->load->view($this->config->item('admin_theme').'/template', $data);
+		}
 	}
 	
 

@@ -126,7 +126,8 @@ class Itemstock_model extends My_Model {
 				
 		if ($project_id) {
 			$this->db->select('items.*, '.$this->_table.'.stock, projects.name as project_name, projects.project_id');
-			$this->db->join($this->_table, $this->_table.'.item_id=items.item_id AND '.$this->_table.'.project_id='.$project_id, 'left');
+			$this->db->join('project_items', 'project_items.project_id='.$project_id.' AND project_items.item_id=items.item_id');
+			$this->db->join($this->_table, $this->_table.'.item_id=project_items.item_id AND '.$this->_table.'.project_id='.$project_id, 'left');
 			$this->db->join('projects', 'projects.project_id='.$project_id, 'left');
 		} else {
 			$this->db->select('items.*, SUM('.$this->_table.'.stock) as stock, projects.name as project_name, projects.project_id');
