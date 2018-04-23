@@ -87,7 +87,7 @@
 									<li>Easy Billing System</li>
 									<li>Easy Advance and Security Payment Management</li>
 									<li>Simplified Expenses</li>
-									<li>Instrant Financial Report</li>
+									<li>Instant Financial Report</li>
 									
 								</ul>
 								<!-- <div class="login-app-icons">
