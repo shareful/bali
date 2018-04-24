@@ -114,7 +114,7 @@
 				</ul>
 			</li> 
 			<li class="">
-				<a href="#" title="Reprts"><i class="fa fa-lg fa-fw fa-file-excel-o"></i> <span class="menu-item-parent">Reprts</span></a>
+				<a href="#" title="Reprts"><i class="fa fa-lg fa-fw fa-file-excel-o"></i> <span class="menu-item-parent">Reports</span></a>
 				<ul>
 					<li class="">
 						<a href="report/profit"><i class="fa fa-lg fa-fw fa-list"></i> Profit</a>

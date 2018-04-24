@@ -20,6 +20,7 @@ class Project extends My_Controller {
 
 		$this->load->model('project_model','project');		
 		$this->load->model('projectitem_model','projectitem');		
+		$this->load->model('itemstock_model','itemstock');		
 	}
 	
 	public function index()
@@ -198,4 +199,14 @@ class Project extends My_Controller {
 	}
 	
 
+	public function items_options($project_id){
+		$items = $this->itemstock->get_list_all($project_id);
+		$html = '<option value="" selected="selected"> None </option>';
+
+		foreach ($items as $key => $item) {
+			$html .= '<option value="'.$item->item_id.'">'.$item->name.'</option>';
+		}
+
+		echo json_encode(array('success'=>'true','html'=>$html)); exit;
+	}
 }

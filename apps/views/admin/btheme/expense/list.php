@@ -58,6 +58,7 @@
 											<th data-class="expand">Voucher #</th>
 											<th data-class="expand">Amount Tk</th>
 											<th data-class="expand">Project Name</th>
+											<th data-class="expand">Item Name</th>
 											<th data-class="expand">Expense TYpe</th>
 											<th data-class="expand">Ref/Invoice #</th>
 											<th data-class="expand">Expense Date</th>
@@ -78,6 +79,7 @@
 											<td><?php echo $expense->code; ?></td>
 											<td><?php echo $expense->amount; ?></td>
 											<td><?php echo isset($expense->project) ? ($expense->project->code.' - '.$expense->project->name ) : ''; ?></td>
+											<td><?php echo isset($expense->item) ? ($expense->item->code.' - '.$expense->item->name ) : ''; ?></td>
 											<td><?php echo ucfirst($expense->exp_type); ?></td>
 											<td><?php echo $expense->ref_code; ?></td>
 											<td><?php echo date('m/d/Y', strtotime($expense->trans_date)); ?></td>

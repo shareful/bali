@@ -24,6 +24,10 @@ class Expense_model extends My_Model {
 			'project'=>array(
 				'model'=>'project_model',
 				'primary_key'=>'project_id',
+			),
+			'item'=>array(
+				'model'=>'item_model',
+				'primary_key'=>'item_id',
 			)
 		);
 
@@ -62,6 +66,7 @@ class Expense_model extends My_Model {
 		$this->field->id = null;
 		$this->field->code = null;
 		$this->field->project_id = null;
+		$this->field->item_id = null;
 		$this->field->amount = null;
 		$this->field->exp_type = null;
 		$this->field->ref_id = null;
@@ -159,7 +164,7 @@ class Expense_model extends My_Model {
 			$where['trans_date <='] = $to_date;
 		}
 		
-		$result = parent::with('project')->order_by('code', 'desc')->get_many_by($where);
+		$result = parent::with('project')->with('item')->order_by('code', 'desc')->get_many_by($where);
 		return $result;
 	}
 
@@ -229,7 +234,31 @@ class Expense_model extends My_Model {
 
 			$this->db->where('company_id', $this->session->userdata('company_id'));
 			
-			return $this->db->get('purchase_master')->row()->total;
+			$total = $this->db->get('purchase_master')->row()->total;
+
+			// Find other expense 
+			$this->db->select('SUM(amount) as total');
+
+			$this->db->where('item_id', $this->input->post('item_id'));
+
+			if ($this->input->post('project_id')) {
+				$this->db->where('project_id', $this->input->post('project_id'));
+			}
+
+			if ($this->input->post('from_date')) {
+				$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+				$this->db->where('trans_date >=', $from_date);
+			}
+
+			if ($this->input->post('to_date')) {
+				$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+				$this->db->where('trans_date <=', $to_date);
+			}
+			
+			$this->db->where('company_id', $this->session->userdata('company_id'));
+			$total += $this->db->get($this->_table)->row()->total;
+
+			return $total;
 		}
 
 		

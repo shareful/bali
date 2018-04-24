@@ -38,7 +38,7 @@ class Report extends My_Controller {
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
 		$data['projects'] = $this->project->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 
 		$data['income_amount'] = $this->income->get_total();
 		$data['expense_amount'] = $this->expense->get_total();
@@ -65,7 +65,7 @@ class Report extends My_Controller {
 		$data['menu'] = 'list';
 		$data['projects'] = $this->project->get_list_all();
 		$data['suppliers'] = $this->supplier->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 
 		$data['bills'] = $this->purchase->get_list_all($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'), array('paid_amount < total_amount', 'security_amount > 0'), 'code', 'asc');
 
@@ -102,7 +102,7 @@ class Report extends My_Controller {
 		$data['menu'] = 'list';
 		$data['projects'] = $this->project->get_list_all();
 		$data['customers'] = $this->customer->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 
 		$data['bills'] = $this->sale->get_list_all($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'), array('received_amount < total_amount', 'security_amount > 0'), 'code', 'asc');
 
@@ -139,7 +139,7 @@ class Report extends My_Controller {
 		$data['menu'] = 'list';
 		$data['projects'] = $this->project->get_list_all();
 		$data['suppliers'] = $this->supplier->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 
 		$data['bills'] = $this->purchase->get_list_all($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('supplier_id'), array('paid_amount < payable_amount'), 'code', 'asc');
 
@@ -176,7 +176,7 @@ class Report extends My_Controller {
 		$data['menu'] = 'list';
 		$data['projects'] = $this->project->get_list_all();
 		$data['customers'] = $this->customer->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 
 		$data['bills'] = $this->sale->get_list_all($this->input->post('project_id'), $this->input->post('item_id'), $this->input->post('customer_id'), array('received_amount < receivable_amount'), 'code', 'asc');
 
@@ -213,7 +213,7 @@ class Report extends My_Controller {
 		$data['menu'] = 'list';
 		$data['customers'] = $this->customer->get_list_all();
 		$data['projects'] = $this->project->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 		
 		if($this->input->post('customer_id')){
 			$data['customer_id'] = $this->input->post('customer_id');
@@ -259,7 +259,7 @@ class Report extends My_Controller {
 		$data['menu'] = 'list';
 		$data['suppliers'] = $this->supplier->get_list_all();
 		$data['projects'] = $this->project->get_list_all();
-		$data['items'] = $this->item->get_list_all();
+		// $data['items'] = $this->item->get_list_all();
 		
 		if($this->input->post('supplier_id')){
 			$data['supplier_id'] = $this->input->post('supplier_id');

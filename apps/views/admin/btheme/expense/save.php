@@ -70,10 +70,21 @@
 									<section class="col col-4">	
 										<label class="input">
 											<select name="project_id" id="project_id" tabindex="3" class="span5 select2">
-	                                            <option value=""></option>
+	                                            <option value=""> None </option>
 	                                            <?php foreach ($projects as $project) { ?>
 	                                                <option value="<?php echo $project->project_id; ?>"><?php echo $project->code . ' - ' . $project->name; ?></option>
 	                                            <?php } ?>
+                                        	</select>
+										</label>
+									</section>
+
+									<section class="col col-2">
+										<label for="project_id" class="control-label">Select Item</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="item_id" id="item_id" tabindex="3" class="span5 select2">
+	                                            <option value=""> None </option>                  
                                         	</select>
 										</label>
 									</section>
@@ -129,6 +140,45 @@
         prevText : '<i class="fa fa-chevron-left"></i>',
         nextText : '<i class="fa fa-chevron-right"></i>'
     }); 
+
+    $("#project_id").change(function(){
+    	var project_id = $(this).val();
+    	if (project_id) {
+	    	$.ajax({
+					url : "<?php echo $this->config->item('base_url') ?>project/items_options/"+project_id,
+					type : "get",
+					dataType : "json",
+					success : function(data) {
+						if (data.html) {
+							$("#item_id").html(data.html);
+							$("#item_id").select2("val", "");
+						} else if(data.error != ""){
+							$.bigBox({
+								title : "Error!",
+								content : data.error,
+								color : "#C46A69",
+								icon : "fa fa-warning shake animated",
+								number : "",
+								timeout : 6000
+							});	
+						}
+					},
+					error: function(){
+						$.bigBox({
+							title : "Error!",
+							content : 'Items list fetching failed. Check your connection or contact with administrator.',
+							color : "#C46A69",
+							icon : "fa fa-warning shake animated",
+							number : "",
+							timeout : 6000
+						});
+					}
+				});
+    	} else {
+    		$("#item_id").html('<option value=""> None </option>');
+    		$("#item_id").select2("val", "");
+    	}
+    });
 
     $("#make_payment").click(function(){
 		// if (confirm('Are you sure want to process This Payment?')) {			
