@@ -25,6 +25,8 @@ class Purchase extends My_Controller {
 		$this->load->model('project_model','project');		
 		$this->load->model('expense_model','expense');		
 		$this->load->model('purchasepayment_model','purchasepayment');		
+		$this->load->model('account_model','account');		
+		$this->load->model('subaccount_model','subaccount');	
 	}
 	
 	public function index($project_id, $item_id)
@@ -53,13 +55,49 @@ class Purchase extends My_Controller {
 
 	public function new_bill($project_id, $item_id){
 		if($this->input->method(TRUE)=='POST'){
-			$this->form_validation->set_rules($this->purchase->validate);
+			$rules = $this->purchase->validate;
+
+			if ($this->input->post('paid_amount') > 0) {
+				$rules[] = array( 
+					'field' => 'acc_id',
+	               	'label' => 'Account',
+	               	'rules' => 'required' 
+	           	);
+
+	           	if ($this->input->post('acc_id')) {
+	           		$account = $this->account->get($this->input->post('acc_id'));
+	           		if ($account->have_sub == 'Yes') {
+	           			$rules[] = array( 
+							'field' => 'sub_acc_id',
+			               	'label' => 'Sub Account',
+			               	'rules' => 'required' 
+			           	);
+	           		}
+	           	}
+			}
+
+			$this->form_validation->set_rules($rules);
 
 			if ($this->form_validation->run()==FALSE) {
 				echo json_encode(array("error"=>$this->form_validation->error_String()));
 			}
 			else
 			{
+				// balance check
+				$sub_acc_balance = 0;
+				$acc_balance = 0;
+				if ($this->input->post('sub_acc_id')) {
+					$sub_acc_balance = $this->subaccount->get_balance($this->input->post('sub_acc_id'));
+					if ($this->input->post('paid_amount') > $sub_acc_balance) {
+						echo json_encode(array('success'=>'false','error'=>'You don\'t have the sufficient balance to expense from the selected sub account.')); exit;
+					}
+				} else if($this->input->post('acc_id')) {
+					$acc_balance = $this->account->get_balance($this->input->post('acc_id'));
+					if ($this->input->post('paid_amount') > $acc_balance) {
+						echo json_encode(array('success'=>'false','error'=>'You don\'t have the sufficient balance to expense from the selected account.')); exit;
+					}
+				}
+
 				$price = $this->input->post('price');
 				$quantity = $this->input->post('quantity');
 				$security_perc = $this->input->post('security_perc');
@@ -101,6 +139,10 @@ class Purchase extends My_Controller {
 						$this->expense->set_value('project_id', $project_id);
 						$this->expense->set_value('amount', $paid_amount);
 						$this->expense->set_value('exp_type', 'purchase');
+						$this->expense->set_value('acc_id', $this->input->post('acc_id'));
+						$this->expense->set_value('sub_acc_id', $this->input->post('sub_acc_id'));
+						$this->expense->set_value('check_trans_no', $this->input->post('check_trans_no'));
+						$this->expense->set_value('notes', $this->input->post('notes'));
 						$this->expense->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('bill_date')), 'MYSQL') );
 						$this->expense->insert();
 
@@ -123,10 +165,12 @@ class Purchase extends My_Controller {
 
 			}
 		} else {
-			$data['items'] = $this->item->get_list_all();
+			// $data['items'] = $this->item->get_list_all();
+			$data['items'] = $this->itemstock->get_list_all($project_id);;
 			$data['suppliers'] = $this->supplier->get_list_all();
 			$data['projects'] = $this->project->get_list_all();
 			$data['itemstock'] = $this->itemstock->get_item($item_id, $project_id);
+			$data['accounts'] = $this->account->get_list_all();
 
 			$data['project_id'] = $project_id;
 			$data['supplier_id'] = '';

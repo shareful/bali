@@ -26,7 +26,7 @@ class Item extends My_Controller {
 		
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
-		$data['items'] = $this->item->get_list_all();
+		$data['items'] = $this->item->get_list_all(true);
 		if(is_ajax()){
 			$this->load->view($this->config->item('admin_theme').'/item/list', $data);
 			return;

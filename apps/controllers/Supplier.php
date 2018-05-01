@@ -26,7 +26,7 @@ class Supplier extends My_Controller {
 		
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
-		$data['suppliers'] = $this->supplier->get_list_all();
+		$data['suppliers'] = $this->supplier->get_list_all(true);
 		if(is_ajax()){
 			$this->load->view($this->config->item('admin_theme').'/supplier/list', $data);
 			return;

@@ -30,8 +30,205 @@ class Report extends My_Controller {
 		$this->load->model('securitytaken_model','securitytaken');		
 		$this->load->model('advancegiven_model','advancegiven');	
 		$this->load->model('securitygiven_model','securitygiven');		
+		$this->load->model('account_model','account');		
+		$this->load->model('subaccount_model','subaccount');		
 	}
 	
+	public function summary(){
+		$data['title'] = $this->config->item('company_name');
+		$data['menu'] = 'report';
+		$data['projects'] = $this->project->get_list_all();
+
+		$params = array();
+
+		if ($this->input->post_get('project_id')) {
+			$params['project_id'] = $this->input->post_get('project_id');
+		}
+
+		/*if ($this->input->post_get('item_id')) {
+			$params['item_id'] = $this->input->post_get('item_id');
+		}*/
+
+		if ($this->input->post_get('from_date')) {
+			$params['from_date'] = $this->input->post_get('from_date');
+		}
+
+		if ($this->input->post_get('to_date')) {
+			if (isset($params['from_date'])) {
+				$from_date = custom_standard_date(date_human_to_unix($params['from_date']), 'MYSQL');
+				$to_date = custom_standard_date(date_human_to_unix($this->input->post_get('to_date')), 'MYSQL');
+				if (strtotime($to_date) > strtotime($from_date)) {
+					$params['to_date'] = $this->input->post_get('to_date');
+				}
+			} else {
+				$params['to_date'] = $this->input->post_get('to_date');
+			}
+		}
+				
+
+		// Expenses
+		$common_where = array();
+		if (isset($params['project_id'])) {
+			$common_where['project_id'] = $params['project_id'];
+		}
+		
+		/*if (isset($params['item_id'])) {
+			$common_where['item_id'] = $params['item_id'];
+		}*/
+
+		if (isset($params['from_date'])) {
+			$from_date = custom_standard_date(date_human_to_unix($params['from_date']), 'MYSQL');
+			$common_where['trans_date >='] = $from_date;
+		}
+
+		if (isset($params['to_date'])) {
+			$to_date = custom_standard_date(date_human_to_unix($params['to_date']), 'MYSQL');
+			$common_where['trans_date <='] = $to_date.' 23:59:59';
+		}
+
+		// other expense
+		$where = $common_where;
+		$where['exp_type'] = 'other';
+		$data['other_expense'] = $this->expense->get_custom_total($where);		
+		// Bill Paid
+		$where = $common_where;
+		$where['exp_type'] = 'purchase';
+		$data['bill_expense'] = $this->expense->get_custom_total($where);		
+		// Advance Paid
+		$where = $common_where;
+		$where['exp_type'] = 'advance';
+		$data['advance_expense'] = $this->expense->get_custom_total($where);		
+		// Security Paid
+		$where = $common_where;
+		$where['exp_type'] = 'security';
+		$data['security_expense'] = $this->expense->get_custom_total($where);		
+		// Total Expnese
+		$data['total_expense'] = $data['other_expense'] + $data['bill_expense'] + $data['advance_expense'] + $data['security_expense'];
+		
+
+		// Bill Payment Received
+		$where = $common_where;
+		$where['income_type'] = 'sale';
+		$data['bill_income'] = $this->income->get_custom_total($where);
+		// Advance Payment Received
+		$where = $common_where;
+		$where['income_type'] = 'advance';
+		$data['advance_income'] = $this->income->get_custom_total($where);
+		// Security Payment Received
+		$where = $common_where;
+		$where['income_type'] = 'security';
+		$data['security_income'] = $this->income->get_custom_total($where);
+		// Investment Received
+		$where = $common_where;
+		$where['income_type'] = 'invest';
+		$data['invest_income'] = $this->income->get_custom_total($where);
+		// Other Income Received
+		$where = $common_where;
+		$where['income_type'] = 'other';
+		$data['other_income'] = $this->income->get_custom_total($where);
+		// Total Income
+		$data['total_income'] = $data['bill_income'] + $data['advance_income'] + $data['security_income'] + $data['invest_income'] + $data['other_income'];
+
+
+		// Bill Payable
+		$where = array();
+		if (isset($params['project_id'])) {
+			$where['project_id'] = $params['project_id'];
+		}
+		
+		/*if (isset($params['item_id'])) {
+			$where['item_id'] = $params['item_id'];
+		}*/
+
+		if (isset($params['from_date'])) {
+			$from_date = custom_standard_date(date_human_to_unix($params['from_date']), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if (isset($params['to_date'])) {
+			$to_date = custom_standard_date(date_human_to_unix($params['to_date']), 'MYSQL');
+			$where['bill_date <='] = $to_date.' 23:59:59';
+		}
+		$data['bill_payable'] = $this->purchase->get_bill_payable($where);
+		$data['total_payable'] = $this->purchase->get_payable($where);
+		$data['security_payable'] = $data['total_payable'] - $data['bill_payable'];
+
+		// Bill Receivable
+		$data['bill_receivable'] = $this->sale->get_bill_receivable($where);
+		$data['total_receivable'] = $this->sale->get_receivable($where);
+		$data['security_receivable'] = $data['total_receivable'] - $data['bill_receivable'];
+
+
+
+
+		// Accounts Balance
+		$data['accounts'] = $this->account->get_list_all();
+		$where = array();
+		$opening_balance_where = array();
+		
+		
+		/*if (isset($params['item_id'])) {
+			$where['item_id'] = $params['item_id'];
+			$opening_balance_where['item_id'] = $params['item_id'];
+		}	*/	
+
+		if (isset($params['from_date'])) {
+			$from_date = custom_standard_date(date_human_to_unix($params['from_date']), 'MYSQL');
+			$where[] = "trans_date >= '".$from_date."'";
+			$opening_balance_where[] = "trans_date < '{$from_date}'";
+		}
+
+		if (isset($params['project_id'])) {
+			$where[] = "project_id = '".$params['project_id']."'";
+			if (!empty($opening_balance_where)) {
+				$opening_balance_where[] = "project_id = '".$params['project_id']."'";
+			}
+		}
+
+		if (isset($params['to_date'])) {
+			$to_date = custom_standard_date(date_human_to_unix($params['to_date']), 'MYSQL');
+			$where[] = "trans_date <= '".$to_date." 23:59:59'";
+		}
+
+		if (!empty($opening_balance_where)) {
+			$data['opening_balance'] = $this->account->get_custom_balance($opening_balance_where);
+		}
+
+		foreach ($data['accounts'] as $key => $account) {
+			$account->balance = $this->account->get_custom_balance(array_merge($where, array("acc_id = '".$account->acc_id."'")));
+			if ($account->have_sub=='Yes') {
+				$account->subaccounts = $this->subaccount->get_list_all($account->acc_id);
+				foreach ($account->subaccounts as $skey => $subaccount) {
+					$subaccount->balance = $this->account->get_custom_balance(array_merge($where, array("sub_acc_id = '".$subaccount->sub_acc_id."'")));
+					$account->subaccounts[$skey] = $subaccount;
+				}
+			}
+			$data['accounts'][$key] = $account;
+		}
+
+		$where = array();
+		if (isset($params['project_id'])) {
+			$where[] = "project_id = '".$params['project_id']."'";
+		}
+		if (isset($params['to_date'])) {
+			$to_date = custom_standard_date(date_human_to_unix($params['to_date']), 'MYSQL');
+			$where[] = "trans_date <= '".$to_date." 23:59:59'";
+		}
+		$data['net_closing_balance'] = $this->account->get_custom_balance($where);
+
+
+
+
+		$data['params'] = $params;
+		if(is_ajax()){
+            $this->load->view($this->config->item('admin_theme').'/report/summary', $data);
+            return;
+        }
+        $data['content'] = $this->config->item('admin_theme').'/report/summary';
+        $this->load->view($this->config->item('admin_theme').'/template', $data);
+	
+	}
+
 	public function profit()
 	{
 		
@@ -298,5 +495,67 @@ class Report extends My_Controller {
 		// $data['privileges'] = $this->privileges;
 		$data['content'] = $this->config->item('admin_theme').'/report/supplier_balance';
 		$this->load->view($this->config->item('admin_theme').'/template', $data);		
+	}
+
+	public function account_statement(){
+		$data['title'] = $this->config->item('company_name');
+		$data['menu'] = 'report';
+
+		if($this->input->post_get('acc_id')!=''){
+			$data['account'] = $this->account->get($this->input->post_get('acc_id'));
+			
+			$where = array();
+			$opening_balance_where = array();
+
+			if ($this->input->post_get('from_date')) {
+				$from_date = custom_standard_date(date_human_to_unix($this->input->post_get('from_date')), 'MYSQL');
+				$where[] = "trans_date >= '{$from_date}'";	
+				$opening_balance_where[] = "trans_date < '{$from_date}'";
+				$data['from_date'] = $from_date;
+			}
+
+			if ($this->input->post_get('to_date')) {
+				$to_date = custom_standard_date(date_human_to_unix($this->input->post_get('to_date')), 'MYSQL');
+				$where[] = "trans_date <= '{$to_date} 23:59:59'";		
+				$data['to_date'] = $to_date;	
+			}
+
+			$where[] = "acc_id = '".$this->input->post_get('acc_id')."'";
+			if (!empty($opening_balance_where)) {
+				$opening_balance_where[] = "acc_id = '".$this->input->post_get('acc_id')."'";
+			}
+
+			if ($this->input->post_get('sub_acc_id')!='') {
+				$data['subaccount'] = $this->subaccount->get($this->input->post_get('sub_acc_id'));
+				$where[] = "sub_acc_id = '".$this->input->post_get('sub_acc_id')."'";
+
+				if (!empty($opening_balance_where)) {
+					$opening_balance_where[] = "sub_acc_id = '".$this->input->post_get('sub_acc_id')."'";
+				}
+			}
+
+			$data['rows'] = $this->account->get_statement($where);
+			if (!empty($opening_balance_where)) {
+				$data['opening_balance'] = $this->account->get_custom_balance($opening_balance_where);
+			}
+			// echo $this->db->last_query();exit();
+			// echo "<pre>"; echo count($data['rows']); exit();
+
+			if(is_ajax()){
+	            $this->load->view($this->config->item('admin_theme').'/report/account_statement_data', $data);
+	            return;
+	        }
+	        $data['content'] = $this->config->item('admin_theme').'/report/account_statement_data';
+	        $this->load->view($this->config->item('admin_theme').'/template', $data);
+		} else {
+			$data['accounts'] = $this->account->get_list_all();
+				
+			if(is_ajax()){
+	            $this->load->view($this->config->item('admin_theme').'/report/account_statement', $data);
+	            return;
+	        }
+	        $data['content'] = $this->config->item('admin_theme').'/report/account_statement';
+	        $this->load->view($this->config->item('admin_theme').'/template', $data);
+		}
 	}
 }

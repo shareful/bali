@@ -48,7 +48,7 @@
 												<a class="btn btn-edit" href="#project/save/<?php echo $project->project_id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Edit</a>
 												<a class="btn btn-info" href="#stock/index/<?php echo $project->project_id;?>"><i class="fa fa-lg fa-fw fa-cube"></i> Items</a>
 												&nbsp;&nbsp;&nbsp;
-												<button class="btn btn-danger del" onclick="deleteProject(<?php echo $project->project_id;?>)" id="delete_project" ><i class="fa fa-lg fa-fw fa-trash"></i></button>
+												<!-- <button class="btn btn-danger del" onclick="deleteProject(<?php echo $project->project_id;?>)" id="delete_project" ><i class="fa fa-lg fa-fw fa-trash"></i></button> -->
 											</td>
 										</tr>
 										<?php 

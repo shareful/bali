@@ -28,7 +28,7 @@ class Project extends My_Controller {
 		
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
-		$data['projects'] = $this->project->get_list_all();
+		$data['projects'] = $this->project->get_list_all(true);
 		if(is_ajax()){
 			$this->load->view($this->config->item('admin_theme').'/project/list', $data);
 			return;

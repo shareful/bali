@@ -76,7 +76,7 @@ function currency_format($amount, $include_symbol = true){
    $str .= $CI->session->userdata('currency_symbol').' '; 
   } 
   
-  $str .= number_format($amount, 2); 
+  $str .= number_format($amount, 2, '.', ''); 
 
   if ($include_symbol AND $CI->session->userdata('currency_symbol_position') == 'After') { 
     $str .= ' '.$CI->session->userdata('currency_symbol'); 

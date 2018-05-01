@@ -1,27 +1,16 @@
-
 <?php
 	$theme = $this->config->item('theme');
 ?>
-<div class="row">
-	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Project: <a href="#stock/index/<?php echo $project->project_id ?>"><?php echo $project->name ?></a> <span>> <?php echo $item->name ?></span></h1>
-	</div>
-</div>
-<div class="row">
-	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-		<i class="fa-fw fa fa-file-text-o"></i> <a href="#sale/index/<?php echo $project->project_id ?>/<?php echo $item->item_id ?>">Go to Sales Bills</a>
-	</div>
-</div>
 <section id="widget-grid" class="">
 	<div class="row">
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
 				<header> 
-					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Purchase Bills</h6>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span><h6 style="float: left; margin: 0px; padding: 5px;"> Accounts List</h6>
 				</header>
 				<div class="form-actions">
 	                <div class="span12 center">
-	                	<a class="btn btn-success withpadding" href="#purchase/new_bill/<?php echo $project_id ;?>/<?php echo $item_id ;?>">New Bill</a>                            
+	                	<a class="btn btn-success withpadding" href="#account/save">Add New Account</a>                            
 	                </div>
 	                <br>
 					<div class="span12 center">
@@ -35,16 +24,9 @@
 									<thead>
 										<tr>
 											<th data-class="expand">SN</th>
-											<th data-class="expand">Bill #</th>
-											<th data-class="expand">Bill Date</th>
-											<th data-class="expand">Ref #</th>
-											<th data-class="expand">Supplier</th>
-											<th data-class="expand">Total Amt (tk)</th>
-											<th data-class="expand">Paid Amt (tk)</th>
-											<th data-class="expand">Payment Due (tk)</th>
-											<th data-class="expand">Sec %</th>
-											<th data-class="expand">Sec Due (tk)</th>
-											<th data-class="expand">Status</th>
+											<th data-class="expand">Code</th>
+											<th data-class="expand">Account Name</th>
+											<th data-class="expand">Have Sub Account</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
 									</thead>
@@ -52,59 +34,27 @@
 										
 										<?php	
 										$c = 1;
-										$nul_var1 = null;
-										$nul_var2 = null;
-										foreach ($bills as $bill) { 
-											$bill = purchase_bill_cal_info($bill, $nul_var1, $nul_var2);
-
-											$payable_due_amt_css = '';
-											$security_due_amt_css = '';
-											
-											if ($bill->payable_due_amt > 0) {
-												$payable_due_amt_css = 'color: red';
-											}
-
-											if ($bill->security_due_amt > 0) {
-												$security_due_amt_css = 'color: red';
-											}
-
-										?>
-										<tr id="row-purchases-<?php echo $bill->id;?>">
+										foreach ($accounts as $account) { ?>
+										<tr id="row-accounts-<?php echo $account->acc_id;?>">
 											<td><?php echo $c; ?></td>
-											<td><a href="purchase/bill_print/<?php echo $bill->id ?>" target="_blank"><?php echo $bill->project->code.'-'.$bill->supplier->code.'-'.$bill->item->code.'-'.$bill->code; ?></a></td>
-											<td><?php echo date("m/d/Y", strtotime($bill->bill_date)); ?></td>
-											<td><?php echo $bill->ref_no; ?></td>
-											<td><?php echo $bill->supplier->name; ?></td>
-											<td><?php echo $bill->total_amount; ?></td>
-											<td><?php echo $bill->paid_amount; ?></td>
-											<td style="<?php echo $payable_due_amt_css; ?>"><?php echo $bill->payable_due_amt; ?></td>
-											<td><?php echo $bill->security_perc; ?></td>
-											<td style="<?php echo $security_due_amt_css; ?>"><?php echo $bill->security_due_amt; ?></td>
 											<td>
 												<?php
-													
-												if ($bill->is_sec_due) {
-													echo '<span class="label bg-color-orange pull-right">Security Due</span> ';
-												}
-												if ($bill->is_payment_due) {
-													echo '<span class="label bg-color-pink pull-right">Payment Due</span>';
+												if ($account->have_sub == 'Yes') {
+													echo '<a href="#account/subacc/'.$account->acc_id.'">'.$account->code.'</a>';
+												} else {
+													echo $account->code;
 												}
 												?>
 											</td>
+											<td><?php echo $account->name; ?></td>
+											<td><?php echo $account->have_sub; ?></td>
 											<td>
+												
+												<a class="btn btn-edit" href="#account/save/<?php echo $account->acc_id;?>"><i class="fa fa-lg fa-fw fa-edit"></i> Edit</a>
 												<?php
-												if ($bill->is_sec_due OR $bill->is_payment_due){
-												?> 
-													<a class="btn btn-edit" href="#payment/make/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-dollar"></i> Make </a>
-												<?php
-												}
-												?>
-												<a class="btn btn-edit" data-toggle="modal" data-target="#remoteModal" href="payment/p_ledger/<?php echo $bill->id;?>"><i class="fa fa-lg fa-fw fa-list"></i> Payments </a>
-												<?php
-												if ($bill->paid_amount==0) {
-												?>
-													&nbsp;&nbsp;&nbsp;
-													<button class="btn btn-danger del" onclick="deleteBill(<?php echo $bill->id;?>, this)" ><i class="fa fa-lg fa-fw fa-trash"></i></button>
+												if ($account->have_sub =='Yes') {
+												?>	
+													<a class="btn btn-info" href="#account/subacc/<?php echo $account->acc_id;?>"><i class="fa fa-lg fa-fw fa-bars"></i> Sub Accounts</a>
 												<?php
 												}
 												?>
@@ -123,7 +73,7 @@
 			</div>
 		</article>
 	</div>
-</section>
+</section>					
 
 <!-- Dynamic Modal -->  
 <div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">  
@@ -136,25 +86,25 @@
 <!-- /.modal --> 
 
 <script type="text/javascript">
-	var deleteBill=function(id, btn){
-		if (confirm('Are you sure want to delete the Bill?')) {			
-			var $btn = $(btn);
-			// $btn.val('loading');
+	var deleteAccount=function(id){
+		if (confirm('Are you sure want to delete the Account?')) {			
+			var $btn = $(this);
+			$btn.val('loading');
 			$btn.attr({disabled: true});
 
 			$.ajax({
-				url : "<?php echo $this->config->item('base_url') ?>purchase/delete",
+				url : "<?php echo $this->config->item('base_url') ?>account/delete",
 				type : "post",
 				dataType : "json",
 				data : 'id='+id,
 				success : function(data) {
 					$btn.attr({disabled: false});
-					// $btn.val('Save changes');
+					$btn.val('Save changes');
 					if (data.success == 'true') {
-						$('#row-purchases-'+id).fadeOut().remove();
+						$('#row-accounts-'+id).fadeOut().remove();
 						$.bigBox({
 							title : "Success",
-							content : "Purchase Bill deleted.",
+							content : "Account deleted.",
 							color : "#739E73",
 							timeout: 8000,
 							icon : "fa fa-check",
@@ -174,7 +124,7 @@
 				},
 				error: function(){
 					$btn.attr({disabled: false});
-					// $btn.val('Save changes');
+					$btn.val('Save changes');
 					$.bigBox({
 						title : "Error!",
 						content : data.error,

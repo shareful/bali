@@ -91,6 +91,44 @@
 										</label>
 									</section>										
 								</div>
+
+								<div class="row">
+									<section class="col col-2">
+										<label for="acc_id" class="control-label">Account</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="acc_id" id="acc_id" tabindex="3" class="span5 select2">
+	                                            <option value="">Select One</option>
+	                                            <?php foreach ($accounts as $key=>$acc) { ?>
+	                                                <option value="<?php echo $acc->acc_id; ?>"><?php echo $acc->name; ?></option>
+	                                            <?php } ?>
+                                        	</select>
+										</label>
+									</section>
+
+									<section class="col col-2 sub_acc_wrap" style="display: none;">
+										<label for="sub_acc_id" class="control-label">Sub Account</label>
+									</section>
+									<section class="col col-4 sub_acc_wrap" style="display: none;">	
+										<label class="input">
+											<select name="sub_acc_id" id="sub_acc_id" tabindex="3" class="span5 select2">
+	                                            <option value="">Select One</option>
+                                        	</select>
+										</label>
+									</section>
+								</div>
+
+								<div class="row">
+									<section class="col col-2 sub_acc_wrap" style="display: none;">
+	                                    <label class="control-label" for="check_trans_no">Check / Trans. No</label>
+	                                </section>
+	                                <section class="col col-4 sub_acc_wrap" style="display: none;">
+	                                    <label class="input"> 
+	                                    	<input type="text" name="check_trans_no" value="" id="check_trans_no" class="span5" placeholder="Check or Transaction No">
+	                                    </label>
+	                                </section>
+								</div>
 							</fieldset>
 							<fieldset>
 								<legend>Item Info</legend>
@@ -264,7 +302,92 @@
 	}
 	?>
 
-	$('#item_id, #project_id, #customer_id').change(function(){
+	$("#acc_id").change(function(){
+    	var acc_id = $(this).val();
+    	if (acc_id) {
+	    	$.ajax({
+					url : "<?php echo $this->config->item('base_url') ?>account/subacc_options/"+acc_id,
+					type : "get",
+					dataType : "json",
+					success : function(data) {
+						if (data.html && data.html != '') {
+							$("#sub_acc_id").html(data.html);
+							$("#sub_acc_id").select2("val", "");
+							$('.sub_acc_wrap').show();
+						} else {
+							$('.sub_acc_wrap').hide();
+						}
+					},
+					error: function(){
+						$.bigBox({
+							title : "Error!",
+							content : 'Sub account list fetching failed. Check your connection or contact with administrator.',
+							color : "#C46A69",
+							icon : "fa fa-warning shake animated",
+							number : "",
+							timeout : 6000
+						});
+					}
+				});
+    	} else {
+    		$("#sub_acc_id").html('<option value=""> Select One </option>');
+    		$("#sub_acc_id").select2("val", "");
+    		$('.sub_acc_wrap').hide();
+    	}
+    });
+
+    $("#project_id").change(function(){
+    	var project_id = $(this).val();
+    	if (project_id) {
+	    	$.ajax({
+					url : "<?php echo $this->config->item('base_url') ?>project/items_options/"+project_id,
+					type : "get",
+					dataType : "json",
+					success : function(data) {
+						if (data.html) {
+							$("#item_id").html(data.html);
+							$("#item_id").select2("val", "");
+							$("#stockbalance").val("");
+							$("#quantity").val("");
+							$("#price").val("");
+							$("#stockbilledbalance").val("");
+							$("#availbletobill").val("");
+							$('#quantity, #price').trigger('change');
+						} else if(data.error != ""){
+							$.bigBox({
+								title : "Error!",
+								content : data.error,
+								color : "#C46A69",
+								icon : "fa fa-warning shake animated",
+								number : "",
+								timeout : 6000
+							});	
+						}
+					},
+					error: function(){
+						$.bigBox({
+							title : "Error!",
+							content : 'Items list fetching failed. Check your connection or contact with administrator.',
+							color : "#C46A69",
+							icon : "fa fa-warning shake animated",
+							number : "",
+							timeout : 6000
+						});
+					}
+				});
+    	} else {
+    		$("#item_id").html('<option value=""> None </option>');
+    		$("#item_id").select2("val", "");
+    		$("#stockbalance").val("");
+			$("#quantity").val("");
+			$("#price").val("");
+			$("#stockbilledbalance").val("");
+			$("#availbletobill").val("");
+			$('#quantity, #price').trigger('change');
+    	}
+    });
+
+	$('#item_id, #customer_id').change(function(){
 		var item_id = $('#item_id').val();
 		var project_id = $('#project_id').val();
 		var customer_id = $('#customer_id').val();
@@ -301,7 +424,7 @@
 		}
 	});
 
-	$('#item_id, #project_id').change(function(){
+	$('#item_id').change(function(){
 		var item_id = $('#item_id').val();
 		var project_id = $('#project_id').val();
 		

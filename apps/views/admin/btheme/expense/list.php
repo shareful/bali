@@ -12,14 +12,14 @@
 				</header>
 				<div class="form-actions">
 					<div class="span12" style="text-align: left;">
-						<form action="report/income" method="post" class="smart-form" id="frmreport">
+						<form action="expense/index" method="post" class="smart-form" id="frmreport">
 							<fieldset>
 								
 								<div class="row">
 									<section class="col col-2">
 										<label for="from_date" class="control-label">From Date</label>
 									</section>
-									<section class="col col-3">	
+									<section class="col col-4">	
 										<label class="input"> <i class="icon-append fa fa-calendar"></i>
                                             <input id="from_date" type="text" name="from_date" value="">
                                         </label>
@@ -28,19 +28,93 @@
 									<section class="col col-2">
 										<label for="to_date" class="control-label">To Date</label>
 									</section>
-									<section class="col col-3">	
+									<section class="col col-4">	
 										<label class="input"> <i class="icon-append fa fa-calendar"></i>
                                             <input id="to_date" type="text" name="to_date" value="<?php echo date("m-d-Y"); ?>">
                                         </label>
 									</section>				
+								</div>
+
+								<div class="row">
 									<section class="col col-2">
-											<input type="button" name="submit" class="btn btn-success withpadding" id="filter_report" value="Search" />
+										<label for="project_id" class="control-label">Select Project</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="project_id" id="project_id" tabindex="3" class="span5 select2">
+	                                            <option value=""> All </option>
+	                                            <?php foreach ($projects as $project) { ?>
+	                                                <option value="<?php echo $project->project_id; ?>" <?php echo (isset($params['project_id']) AND $params['project_id'] == $project->project_id) ? 'selected' : ''; ?>><?php echo $project->code . ' - ' . $project->name; ?></option>
+	                                            <?php } ?>
+                                        	</select>
+										</label>
+									</section>
+
+									<section class="col col-2">
+										<label for="item_id" class="control-label">Select Item</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="item_id" id="item_id" tabindex="3" class="span5 select2">
+	                                            <option value=""> None </option>
+	                                            <?php 
+	                                            if (isset($items) and !empty($items)) {
+		                                            foreach ($items as $item) { ?>
+		                                                <option value="<?php echo $item->item_id; ?>" <?php echo (isset($params['item_id']) AND $params['item_id'] == $item->item_id) ? 'selected' : ''; ?>><?php echo $item->code . ' - ' . $item->name; ?></option>
+	                                            <?php 
+	                                            	}
+		                                        } 
+		                                        ?>
+                                        	</select>
+										</label>
 									</section>
 								</div>
+
+								<div class="row">
+									<section class="col col-2">
+										<label for="acc_id" class="control-label">Account</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="acc_id" id="acc_id" tabindex="3" class="span5 select2">
+	                                            <option value="">Select One</option>
+	                                            <?php foreach ($accounts as $key=>$acc) { ?>
+	                                                <option value="<?php echo $acc->acc_id; ?>" <?php echo (isset($params['acc_id']) AND $params['acc_id'] == $acc->acc_id) ? 'selected' : ''; ?>><?php echo $acc->name; ?></option>
+	                                            <?php } ?>
+                                        	</select>
+										</label>
+									</section>
+
+									<section class="col col-2 sub_acc_wrap" style="<?php echo !isset($subaccounts) ? 'display: none;' : '' ?>">
+										<label for="sub_acc_id" class="control-label">Sub Account</label>
+									</section>
+									<section class="col col-4 sub_acc_wrap" style="<?php echo !isset($subaccounts) ? 'display: none;' : '' ?>">	
+										<label class="input">
+											<select name="sub_acc_id" id="sub_acc_id" tabindex="3" class="span5 select2">
+	                                            <option value="">Select One</option>
+	                                            <?php 
+	                                            if (isset($subaccounts) and !empty($subaccounts)) {
+		                                            foreach ($subaccounts as $subaccount) { ?>
+		                                                <option value="<?php echo $subaccount->sub_acc_id; ?>" <?php echo (isset($params['sub_acc_id']) AND $params['sub_acc_id'] == $subaccount->sub_acc_id) ? 'selected' : ''; ?>><?php echo $subaccount->name; ?></option>
+	                                            <?php 
+	                                            	}
+		                                        } 
+		                                        ?>
+                                        	</select>
+										</label>
+									</section>
+								</div>
+
 							</fieldset>
+
+							<!-- <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" /> -->
+                            <div class="form-actions">
+	                            <input type="button" name="submit" class="btn btn-success withpadding" id="filter_report" value="Submit" />
+	                        </div>
+	                        <div style="clear: both; padding-bottom: 10px;"></div>
 						</form>	                	
 	                </div>
-	                <div class="span12 center">
+	                <div class="span12 center" style="text-align: left;">
 	                	<a class="btn btn-success withpadding" href="#expense/save">New Expense</a>                            
 	                </div>
 	                <br>
@@ -62,6 +136,7 @@
 											<th data-class="expand">Expense TYpe</th>
 											<th data-class="expand">Ref/Invoice #</th>
 											<th data-class="expand">Expense Date</th>
+											<th data-class="expand">Account</th>
 											<th data-class="expand">Notes</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
@@ -83,6 +158,19 @@
 											<td><?php echo ucfirst($expense->exp_type); ?></td>
 											<td><?php echo $expense->ref_code; ?></td>
 											<td><?php echo date('m/d/Y', strtotime($expense->trans_date)); ?></td>
+											<td>
+												<?php 
+													
+													if (isset($expense->subaccount)) {
+														echo $expense->subaccount->name.' - '.$expense->subaccount->code;
+													} else {
+														echo $expense->account->name; 
+													}
+													if ($expense->check_trans_no) {
+														echo '<br>check/trans #'.$expense->check_trans_no;
+													}
+												?>
+											</td>
 											<td><?php echo $expense->notes; ?></td>
 											<td>
 											</td>
@@ -171,6 +259,79 @@
 		}
 	}
 
+	$("#acc_id").change(function(){
+    	var acc_id = $(this).val();
+    	if (acc_id) {
+	    	$.ajax({
+					url : "<?php echo $this->config->item('base_url') ?>account/subacc_options/"+acc_id,
+					type : "get",
+					dataType : "json",
+					success : function(data) {
+						if (data.html && data.html != '') {
+							$("#sub_acc_id").html(data.html);
+							$("#sub_acc_id").select2("val", "");
+							$('.sub_acc_wrap').show();
+						} else {
+							$('.sub_acc_wrap').hide();
+						}
+					},
+					error: function(){
+						$.bigBox({
+							title : "Error!",
+							content : 'Sub account list fetching failed. Check your connection or contact with administrator.',
+							color : "#C46A69",
+							icon : "fa fa-warning shake animated",
+							number : "",
+							timeout : 6000
+						});
+					}
+				});
+    	} else {
+    		$("#sub_acc_id").html('<option value=""> Select One </option>');
+    		$("#sub_acc_id").select2("val", "");
+    		$('.sub_acc_wrap').hide();
+    	}
+    });
+
+    $("#project_id").change(function(){
+    	var project_id = $(this).val();
+    	if (project_id) {
+	    	$.ajax({
+					url : "<?php echo $this->config->item('base_url') ?>project/items_options/"+project_id,
+					type : "get",
+					dataType : "json",
+					success : function(data) {
+						if (data.html) {
+							$("#item_id").html(data.html);
+							$("#item_id").select2("val", "");
+						} else if(data.error != ""){
+							$.bigBox({
+								title : "Error!",
+								content : data.error,
+								color : "#C46A69",
+								icon : "fa fa-warning shake animated",
+								number : "",
+								timeout : 6000
+							});	
+						}
+					},
+					error: function(){
+						$.bigBox({
+							title : "Error!",
+							content : 'Items list fetching failed. Check your connection or contact with administrator.',
+							color : "#C46A69",
+							icon : "fa fa-warning shake animated",
+							number : "",
+							timeout : 6000
+						});
+					}
+				});
+    	} else {
+    		$("#item_id").html('<option value=""> None </option>');
+    		$("#item_id").select2("val", "");
+    	}
+    });
+
 	//Here we only run
 	runAllForms();
 	
@@ -189,38 +350,8 @@
 		nextText : '<i class="fa fa-chevron-right"></i>'
 	});	
 
-	$("#filter_report").click(function(){
-		var $btn = $(this);
-	    $btn.val('loading');
-	    $btn.attr({disabled: true});
-		
-		$.ajax({
-			url : "<?php echo $this->config->item('base_url') ?>expense",
-			type : "post",
-			dataType : "json",
-			data : $("#frmreport").serialize(),
-			success : function(data) {
-				// console.log(data);
-				$btn.attr({disabled: false});
-				$btn.val('Search');
-				if (data.success == 'true') {
-					$('#dt_basic').html(data.html);
-				} 
-			},
-			error: function(){
-				$btn.attr({disabled: false});
-				$btn.val('Search');
-				$.bigBox({
-					title : "Error!",
-					content : 'Please check your connection!',
-					color : "#C46A69",
-					icon : "fa fa-warning shake animated",
-					number : "",
-					timeout : 6000
-				});
-			}
-		});
-		
+	$("#filter_report").click(function(){		
+			location.hash = 'expense/index?'+$("#frmreport").serialize();		
 	});
 
 	pageSetUp();

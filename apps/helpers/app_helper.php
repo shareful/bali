@@ -70,6 +70,7 @@ function purchase_bill_cal_info($bill, &$pending_to_adjust_left=null, &$sec_pend
 	$security_due_amt = number_format($security_due_amt, 2, '.', '');
 	$amount_can_pay = number_format($amount_can_pay, 2, '.', '');
 	$sec_amount_can_pay = number_format($sec_amount_can_pay, 2, '.', '');
+	$bill_due_amt = number_format($bill_due_amt, 2, '.', '');
 
 	// Assign new calculated values
 	$bill->is_sec_due = $is_sec_due;
@@ -151,6 +152,7 @@ function sale_bill_cal_info($bill, &$pending_to_adjust_left=null, &$sec_pending_
 	$security_due_amt = number_format($security_due_amt, 2, '.', '');
 	$amount_can_receive = number_format($amount_can_receive, 2, '.', '');
 	$sec_amount_can_receive = number_format($sec_amount_can_receive, 2, '.', '');
+	$bill_due_amt = number_format($bill_due_amt, 2, '.', '');
 
 	// Assign new calculated values
 	$bill->is_sec_due = $is_sec_due;

@@ -26,6 +26,8 @@ class Securityreceived extends My_Controller {
 		$this->load->model('customer_model','customer');		
 		$this->load->model('project_model','project');		
 		$this->load->model('income_model','income');		
+		$this->load->model('account_model','account');		
+		$this->load->model('subaccount_model','subaccount');	
 	}
 
 	public function index()
@@ -54,7 +56,25 @@ class Securityreceived extends My_Controller {
 
 		if($this->input->post())
 		{
-			$this->form_validation->set_rules($this->securitytaken->validate);
+			$rules = $this->securitytaken->validate;
+			$rules[] = array( 
+				'field' => 'acc_id',
+               	'label' => 'Account',
+               	'rules' => 'required' 
+           	);
+
+           	if ($this->input->post('acc_id')) {
+           		$account = $this->account->get($this->input->post('acc_id'));
+           		if ($account->have_sub == 'Yes') {
+           			$rules[] = array( 
+						'field' => 'sub_acc_id',
+		               	'label' => 'Sub Account',
+		               	'rules' => 'required' 
+		           	);
+           		}
+           	}
+
+			$this->form_validation->set_rules($rules);
 
 			if ($this->form_validation->run()==FALSE) {
 				echo json_encode(array("error"=>$this->form_validation->error_String()));
@@ -86,6 +106,9 @@ class Securityreceived extends My_Controller {
 					$this->income->set_value('project_id', $this->input->post('project_id'));
 					$this->income->set_value('amount', $amount);
 					$this->income->set_value('income_type', 'security');
+					$this->income->set_value('acc_id', $this->input->post('acc_id'));
+					$this->income->set_value('sub_acc_id', $this->input->post('sub_acc_id'));
+					$this->income->set_value('check_trans_no', $this->input->post('check_trans_no'));
 					$this->income->set_value('notes', $this->input->post('notes'));
 					$this->income->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('trans_date')), 'MYSQL') );
 					$this->income->set_value('company_id', $this->session->userdata('company_id'));
@@ -106,7 +129,8 @@ class Securityreceived extends My_Controller {
 			$data['menu'] = 'record';
 			$data['projects'] = $this->project->get_list_all();
 			$data['customers'] = $this->customer->get_list_all();
-			$data['items'] = $this->item->get_list_all();
+			// $data['items'] = $this->item->get_list_all();
+			$data['accounts'] = $this->account->get_list_all();
 			
 			$data['record']=$this->securitytaken->get($id);
 			

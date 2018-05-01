@@ -399,4 +399,90 @@ class Purchase_model extends My_Model {
         }
         return $code;
     }
+
+    /**
+	 * Get the bill detail by bill code.
+	 * @access public
+	 * @return array
+	 */
+    public function findbill($code){
+    	$code = trim($code);
+    	$parts = explode("-", $code);
+    	$last_code = $parts[count($parts)-1];
+
+    	$where = array();
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['code'] = $last_code;
+		$data = parent::with('project')->with('supplier')->with('item')->get_by($where);
+		if (!empty($data)) {
+			$data->invoice_no = $data->project->code.'-'.$data->supplier->code.'-'.$data->item->code.'-'.$data->code;
+			$data->due_amount = number_format(($data->total_amount - $data->paid_amount), 2, '.', '');
+		}
+		if (count($parts) == 4 AND $data->invoice_no == $code) {
+			return $data;        
+		} else if(count($parts) == 4){
+			return array();
+		} else {
+			return $data;
+		}
+		return $data;        
+    }
+
+    /**
+	 * Get the remaining bill amount payable.
+	 * @access public
+	 * @return array
+	 */
+	public function get_bill_payable($where=array()){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+
+		$this->db->select('SUM(payable_amount-paid_amount) as total');
+		$this->db->where('paid_amount < payable_amount');
+		if (!empty($where)) {
+			$this->db->where($where);
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['bill_date <='] = $to_date;
+		}
+		
+
+		return $this->db->get($this->_table)->row()->total;
+	}
+
+	/**
+	 * Get the remaining amount payable including bill and security
+	 * @access public
+	 * @return array
+	 */
+	public function get_payable($where=array()){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+
+		$this->db->select('SUM(total_amount-paid_amount) as total');
+		$this->db->where('paid_amount < total_amount');
+		if (!empty($where)) {
+			$this->db->where($where);
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$where['bill_date >='] = $from_date;
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$where['bill_date <='] = $to_date;
+		}
+
+
+		return $this->db->get($this->_table)->row()->total;
+	}
 }

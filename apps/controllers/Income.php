@@ -20,6 +20,9 @@ class Income extends My_Controller {
 
 		$this->load->model('income_model','income');		
 		$this->load->model('project_model','project');		
+		$this->load->model('itemstock_model','itemstock');		
+		$this->load->model('account_model','account');		
+		$this->load->model('subaccount_model','subaccount');		
 	}
 	
 	public function index()
@@ -27,15 +30,76 @@ class Income extends My_Controller {
 		
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
-		$data['incomes'] = $this->income->get_list_all();
+
+		$data['projects'] = $this->project->get_list_all();
+		$data['accounts'] = $this->account->get_list_all();
+
+		$params = array();
+
+		if ($this->input->post_get('project_id')) {
+			$params['project_id'] = $this->input->post_get('project_id');
+		}
+
+		if ($this->input->post_get('from_date')) {
+			$params['from_date'] = $this->input->post_get('from_date');
+		}
+		
+		if ($this->input->post_get('to_date')) {
+			$params['to_date'] = $this->input->post_get('to_date');
+		}
+
+		/*if ($this->input->post_get('item_id')) {
+			$params['item_id'] = $this->input->post_get('item_id');
+		}*/
+
+		if ($this->input->post_get('acc_id')) {
+			$params['acc_id'] = $this->input->post_get('acc_id');
+		}
+
+		if ($this->input->post_get('sub_acc_id')) {
+			$params['sub_acc_id'] = $this->input->post_get('sub_acc_id');
+		}
+
+
+		$where = array();
+		if (isset($params['project_id'])) {
+			$where['project_id'] = $params['project_id'];
+			// $data['items'] = $this->itemstock->get_list_all($params['project_id']);
+		}
+		
+		/*if (isset($params['item_id'])) {
+			$where['item_id'] = $params['item_id'];
+		}*/
+
+		if (isset($params['acc_id'])) {
+			$where['acc_id'] = $params['acc_id'];
+			$data['subaccounts'] = $this->subaccount->get_list_all($params['acc_id']);
+		}
+
+		if (isset($params['sub_acc_id'])) {
+			$where['sub_acc_id'] = $params['sub_acc_id'];
+		}
+
+		if (isset($params['from_date'])) {
+			$from_date = custom_standard_date(date_human_to_unix($params['from_date']), 'MYSQL');
+			$where['trans_date >='] = $from_date;
+		}
+
+		if (isset($params['to_date'])) {
+			$to_date = custom_standard_date(date_human_to_unix($params['to_date']), 'MYSQL');
+			$where['trans_date <='] = $to_date.' 23:59:59';
+		}
+
+		$data['incomes'] = $this->income->get_list_all($where);
+		$data['params'] = $params;
 		if(is_ajax()){
-			if($this->input->method(TRUE)=='POST'){
+			/*if($this->input->method(TRUE)=='POST'){
 				$html = $this->load->view($this->config->item('admin_theme').'/income/list_data', $data, true);
 				echo json_encode(array('success'=>'true','html'=>$html)); exit;
 			} else {				
-				$this->load->view($this->config->item('admin_theme').'/income/list', $data);
-				return;
-			}
+			}*/
+			$this->load->view($this->config->item('admin_theme').'/income/list', $data);
+			return;
 		}
 
 		// $data['privileges'] = $this->privileges;
@@ -46,10 +110,10 @@ class Income extends My_Controller {
 
 	public function save($id=null){
 		// ONly Super admin can create new income
-		if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
-			show_404();
-			return;
-		}
+		// if (!in_array($this->session->userdata('user_type'), array('sadmin','admin'))) {
+		// 	show_404();
+		// 	return;
+		// }
 
 		if($this->input->method(TRUE)=='POST')
 		{
@@ -60,6 +124,24 @@ class Income extends My_Controller {
 	               'label' => 'Notes',
 	               'rules' => 'required' );
 			}
+
+			$rules[] = array( 
+				'field' => 'acc_id',
+               	'label' => 'Account',
+               	'rules' => 'required' 
+           	);
+
+			if ($this->input->post('acc_id')) {
+           		$account = $this->account->get($this->input->post('acc_id'));
+           		if ($account->have_sub == 'Yes') {
+           			$rules[] = array( 
+						'field' => 'sub_acc_id',
+		               	'label' => 'Sub Account',
+		               	'rules' => 'required' 
+		           	);
+           		}
+           	}
+           	
 
 			$this->form_validation->set_rules($rules);
 
@@ -96,6 +178,7 @@ class Income extends My_Controller {
 			$data['menu'] = 'income';
 			$data['income']=$this->income->get($id);
 			$data['projects'] = $this->project->get_list_all();
+			$data['accounts'] = $this->account->get_list_all();
 			$data['income_type_list'] = array(
 				'invest'=>'Invest',
 				'other'=>'Other'

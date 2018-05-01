@@ -7,6 +7,7 @@
 											<th data-class="expand">Income Type</th>
 											<th data-class="expand">Ref/Invoice #</th>
 											<th data-class="expand">Income Date</th>
+											<th data-class="expand">Account</th>
 											<th data-class="expand">Notes</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
@@ -27,6 +28,19 @@
 											<td><?php echo ucfirst($income->income_type); ?></td>
 											<td><?php echo $income->ref_code; ?></td>
 											<td><?php echo date('m/d/Y', strtotime($income->trans_date)); ?></td>
+											<td>
+												<?php 
+													
+													if (isset($income->subaccount)) {
+														echo $income->subaccount->name.' - '.$income->subaccount->code;
+													} else {
+														echo $income->account->name; 
+													}
+													if ($income->check_trans_no) {
+														echo '<br>check/trans #'.$income->check_trans_no;
+													}
+												?>
+											</td>
 											<td><?php echo $income->notes; ?></td>
 											<td>
 											</td>

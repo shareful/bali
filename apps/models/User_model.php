@@ -64,7 +64,7 @@ class User_model extends My_Model {
 		$this->field->password = null;
 		$this->field->name = null;
 		$this->field->user_type = null;
-		$this->field->status = null;
+		$this->field->status = 'Active';
 		$this->field->created = date('Y-m-d H:i:s', time());
 		$this->field->created_by = $this->session->userdata('user_id');
 		$this->field->modified = date('Y-m-d H:i:s', time());
@@ -265,8 +265,40 @@ class User_model extends My_Model {
 	public function get_list_all(){
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
+		if ($this->session->userdata('user_type') == 'admin') {
+			$where['user_type'] = array('admin','user');
+		}
 		$result = parent::order_by('name', 'asc')->get_many_by($where);
 		return $result;
+	}
+
+	/**
+	 * Get all ids of projects which are grant access to a user  
+	 * @access public
+	 * @return array
+	 */
+	public function get_project_ids($user_id){
+		$where = array();
+		$where['user_id'] = $user_id;
+		$this->db->select('project_id');
+		$this->db->where($where);
+		$result = $this->db->get('user_access_projects')->result();
+		
+		$project_ids = array();
+		foreach($result as $row){
+			$project_ids[] = $row->project_id;
+		}
+
+		return $project_ids;
+	}
+
+	public function update_user_projects($user_id, $project_ids){
+		$this->db->where('user_id', $user_id);
+		$this->db->delete('user_access_projects');
+
+		foreach ($project_ids as $project_id) {
+			$this->db->insert('user_access_projects', array('user_id'=>$user_id, 'project_id'=>$project_id));
+		}
 	}
 
 }

@@ -5,7 +5,7 @@
 			<div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
 				<header>
 					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-					<h2>Project Entry Form</h2>				
+					<h2>Account Entry Form</h2>				
 				</header>
 
 				<!-- widget div-->
@@ -19,23 +19,23 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 						
-						<form action="project/save" method="post" class="smart-form" id="frmProject">
+						<form action="account/save" method="post" class="smart-form" id="frmAccount">
 							<fieldset>
 								<div class="row">
 									<section class="col col-2">
-	                                    <label class="control-label" for="code">Project Code</label>
+	                                    <label class="control-label" for="account_code">Account Code</label>
 	                                </section>
 	                                <section class="col col-4">
 	                                    <label class="input"> 
-	                                    	<input type="text" name="code" value="<?php if (count($project) > 0) { echo $project->code; } else { echo $code; } ?>" id="code" class="span5" placeholder="Project Code"> Digit Only
+	                                    	<input type="text" name="code" value="<?php if (count($account) > 0) { echo $account->code; }  ?>" id="account_code" class="span5" placeholder="Account Code" readonly>
 	                                    </label>
 	                                </section> 
 									<section class="col col-2">
-										<label for="project_name" class="control-label">Project Name</label>
+										<label for="account_name" class="control-label">Account Name</label>
 									</section>
 									<section class="col col-4">	
 										<label class="input">
-											<input type="text" name="name" value="<?php if (count($project) > 0) { echo $project->name; } ?>" id="project_name" class="span5" placeholder="Project Company Name">											
+											<input type="text" name="name" value="<?php if (count($account) > 0) { echo $account->name; } ?>" id="account_name" class="span5" placeholder="Account Name">											
 										</label>
 									</section>
 														
@@ -43,41 +43,30 @@
 
 								<div class="row">
 									<section class="col col-2">
-	                                    <label class="control-label" for="address">Address</label>
-	                                </section>
-	                                <section class="col col-4">
-	                                    <label class="textarea"> 
-	                                    	<textarea type="text" name="address" id="address" class="textarea" placeholder="Project Address"><?php if (count($project) > 0) { echo $project->address; } ?></textarea>
-	                                    </label>
-	                                </section> 
+										<label class="label">Have Sub Account</label>
+									</section>
+									<section class="col col-4">
+										<label class="select">
+											<select name="have_sub" id="have_sub" class="span5 chzn-select" data-placeholder="Select One">
+												<option value="Yes" <?php if(count($account) > 0 && $account->have_sub == 'Yes') { echo 'selected'; }?>>Yes</option>
+												<option value="No" <?php if (count($account) > 0 && $account->have_sub != 'Yes') { echo 'selected'; }?>>No</option>
+											</select> <i></i>
+											
+										</label>
+									</section>	
 									<section class="col col-2">
 										<label for="notes" class="control-label">Notes</label>
 									</section>
 									<section class="col col-4">	
 										<label class="textarea">
-											<textarea type="text" name="notes" id="notes" class="textarea" placeholder="Project Notes"><?php if (count($project) > 0) { echo $project->notes; } ?></textarea>		
+											<textarea type="text" name="notes" id="notes" class="textarea" placeholder="Account Notes"><?php if (count($account) > 0) { echo $account->notes; } ?></textarea>		
 										</label>
 									</section>	
 								</div>
-
-								<div class="row">
-									<section class="col col-2">
-											<label class="label">Select Status</label>
-										</section>
-										<section class="col col-4">
-											<label class="select">
-												<select name="status" id="status" class="span5 chzn-select" data-placeholder="Select Status">
-													<option value="Active" selected>Active</option>
-													<option value="Inactive" <?php if (count($project) > 0 && $project->status == 'Inactive') { echo 'selected'; }?>>Inactive</option>
-												</select> <i></i>
-												
-											</label>
-										</section>												
-								</div>
 							</fieldset>
                             <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
-                            <?php if (count($project) > 0) { ?>
-                            <input type="hidden" name="project_id" value="<?php echo $project->project_id; ?>" />
+                            <?php if (count($account) > 0) { ?>
+                            <input type="hidden" name="acc_id" value="<?php echo $account->acc_id; ?>" />
                             <?php } ?>
 	                        <div class="form-actions">
 	                            <input type="button" name="cancel" class="btn-lg btn-back" id="cancel_changes" value="Cancel" onclick="history.go(-1)" />
@@ -101,16 +90,23 @@
 	
 	runAllForms();
 	
+	$('#account_name').change(function(){
+		var name = $(this).val();
+		name = name.replace(/ /g, '');
+		console.log(name);
+		$('#account_code').val(name);
+	});
+
 	$("#save_changes").click(function(){
 		var $btn = $(this);
 	    $btn.val('loading');
 	    $btn.attr({disabled: true});
 		
 		$.ajax({
-			url : "<?php echo $this->config->item('base_url') ?>project/save",
+			url : "<?php echo $this->config->item('base_url') ?>account/save",
 			type : "post",
 			dataType : "json",
-			data : $("#frmProject").serialize(),
+			data : $("#frmAccount").serialize(),
 			success : function(data) {
 				$btn.attr({disabled: false});
 				$btn.val('Save changes');
@@ -123,8 +119,8 @@
 						icon : "fa fa-check",
 						number : ""
 					});
-					$("form#frmProject").trigger("reset");
-					location.hash = 'project';
+					$("form#frmAccount").trigger("reset");
+					location.hash = 'account';
 				} else if(data.error != ""){
 					$.bigBox({
 						title : "Error!",

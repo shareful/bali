@@ -65,7 +65,7 @@ class Supplier_model extends My_Model {
 		$this->field->email = null;
 		$this->field->web = null;
 		$this->field->notes = null;
-		$this->field->status = null;
+		$this->field->status = 'Active';
 		$this->field->deleted = 0;
 		$this->field->created = date('Y-m-d H:i:s', time());
 		$this->field->created_by = $this->session->userdata('user_id');
@@ -143,6 +143,9 @@ class Supplier_model extends My_Model {
 	}
 
 	public function get_option_list($where = array()){
+		$where['company_id'] = $this->session->userdata('company_id');
+		$where['deleted'] = 0;
+		$where['status'] = 'Active';
 		if (!empty($where)) {
 			$this->db->where($where);
 		}
@@ -157,10 +160,13 @@ class Supplier_model extends My_Model {
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all(){
+	public function get_list_all($allstatus=false){
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['deleted'] = 0;
+		if (!$allstatus) {
+			$where['status'] = 'Active';
+		}
 		$result = parent::order_by('name', 'asc')->get_many_by($where);
 		return $result;
 	}

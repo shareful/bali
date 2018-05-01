@@ -19,6 +19,7 @@ class User extends My_Controller {
 		}
 
 		$this->load->model('user_model','user');		
+		$this->load->model('project_model','project');		
 	}
 	
 	public function index()
@@ -89,6 +90,9 @@ class User extends My_Controller {
 					
 					$result = $this->user->update($this->input->post('user_id')); 
 					if ($result) {
+						if ($this->session->userdata('user_type') == 'sadmin') {
+							$this->user->update_user_projects($this->input->post('user_id'), $this->input->post('project'));
+						}
 						echo json_encode(array('success'=>'true','msg'=>"User Information has been updated."));
             			exit;
 						
@@ -109,7 +113,10 @@ class User extends My_Controller {
 					$this->user->set_value('company_id', $this->session->userdata('company_id'));
 					$new_user_id = $this->user->insert();
 
-					if ($new_user_id) {       
+					if ($new_user_id) {   
+						if ($this->session->userdata('user_type') == 'sadmin') {
+							$this->user->update_user_projects($new_user_id, $this->input->post('project'));
+						}    
 						echo json_encode(array('success'=>'true','error'=>"User has been created.")); exit;
 					}
 					else{
@@ -122,6 +129,12 @@ class User extends My_Controller {
 			$data['title'] = $this->config->item('company_name');
 			$data['menu'] = 'user';
 			$data['user']=$this->user->get($id);
+			if ($this->session->userdata('user_type') == 'sadmin') {
+				$data['projects'] = $this->project->get_option_list();
+			}
+			if (!empty($data['user'])) {
+				$data['user_project_ids'] = $this->user->get_project_ids($data['user']->user_id);
+			}
 								
 			if(is_ajax()){
 	            $this->load->view($this->config->item('admin_theme').'/user/save', $data);

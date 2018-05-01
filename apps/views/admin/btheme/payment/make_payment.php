@@ -1,3 +1,8 @@
+<?php
+	$null_var1 = null;
+	$null_var2 = null;
+	$bill = purchase_bill_cal_info($bill, $null_var1, $null_var2);
+?>
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i> Project: <?php echo $bill->project->name ?> <span>> Bill # <?php echo $bill->invoice_no ?></span> <span>> Make New Payment</span></h1>
@@ -49,6 +54,24 @@
 								</div>
 								<div class="row">
 									<section class="col col-2">
+	                                    <label class="control-label" for="project">Project</label>
+	                                </section>
+	                                <section class="col col-4">
+	                                    <label class="input"> 
+	                                    	<input type="text" name="project" value="<?php echo '('.$bill->project->code.')'.$bill->project->name ?>" id="project" class="span5" placeholder="Will generate automatically" readonly="readonly">
+	                                    </label>
+	                                </section>
+	                                <section class="col col-2">
+	                                    <label class="control-label" for="project">Item</label>
+	                                </section>
+	                                <section class="col col-4">
+	                                    <label class="input"> 
+	                                    	<input type="text" name="item" value="<?php echo '('.$bill->item->code.')'.$bill->item->name ?>" id="item" class="span5" placeholder="Will generate automatically" readonly="readonly">
+	                                    </label>
+	                                </section>
+								</div>
+								<div class="row">
+									<section class="col col-2">
 	                                    <label class="control-label" for="total_amount">Bill Total</label>
 	                                </section>
 	                                <section class="col col-3">
@@ -75,11 +98,11 @@
 
 								<div class="row">
 									<section class="col col-2 has-warning">
-	                                    <label class="control-label" for="due_amount"><strong>DUE</strong></label>
+	                                    <label class="control-label" for="payable_due_amt"><strong>DUE</strong></label>
 	                                </section>
 	                                <section class="col col-3 has-warning">
 	                                    <label class="input"> 
-	                                    	<input type="text" name="due_amount" value="<?php echo $bill->due_amount?>" id="due_amount" class="span5" placeholder="Will generate automatically" readonly="readonly">
+	                                    	<input type="text" name="payable_due_amt" value="<?php echo $bill->payable_due_amt?>" id="payable_due_amt" class="span5" placeholder="Will generate automatically" readonly="readonly">
 	                                    </label>
 	                                </section>
 	                                <section class="col col-1">
@@ -102,7 +125,33 @@
 									<section class="col col-1">
 										<label class="control-label">Tk </label>
 									</section>
-								</div>								
+								</div>	
+
+								<div class="row">
+									<section class="col col-2 has-warning">
+	                                    <label class="control-label" for="security_due_amt"><strong>SECURITY DUE</strong> <small><small><small></small></small></small></label>
+	                                </section>
+	                                <section class="col col-3 has-warning">
+	                                    <label class="input"> 
+	                                    	<input type="text" name="security_due_amt" value="<?php echo $bill->security_due_amt?>" id="security_due_amt" class="span5" placeholder="Will generate automatically" readonly="readonly">
+	                                    </label>
+	                                </section>
+	                                <section class="col col-1">
+	                                	Tk
+	                                </section>
+
+	                                <section class="col col-2 has-warning">
+	                                    <label class="control-label" for="bill_due_amt"><strong>TOTAL DUE</strong> <small><small><small></small></small></small></label>
+	                                </section>
+	                                <section class="col col-3 has-warning">
+	                                    <label class="input"> 
+	                                    	<input type="text" name="bill_due_amt" value="<?php echo $bill->bill_due_amt?>" id="bill_due_amt" class="span5" placeholder="Will generate automatically" readonly="readonly">
+	                                    </label>
+	                                </section>
+	                                <section class="col col-1">
+	                                	Tk
+	                                </section>
+								</div>							
 							</fieldset>
 
 							<fieldset>
@@ -131,7 +180,7 @@
 	                            </div>
 	                            <div class="row">		
 	                            	<section class="col col-2">
-										<label for="new_due" class="control-label">Due would be</label>
+										<label for="new_due" class="control-label">Total Due would be</label>
 									</section>
 									<section class="col col-3">	
 										<label class="input">
@@ -150,6 +199,44 @@
 											<textarea type="text" name="notes" id="notes" class="textarea" placeholder="Notes"></textarea>		
 										</label>
 									</section>	
+								</div>
+
+								<div class="row">
+									<section class="col col-2">
+										<label for="acc_id" class="control-label">Account</label>
+									</section>
+									<section class="col col-4">	
+										<label class="input">
+											<select name="acc_id" id="acc_id" tabindex="3" class="span5 select2">
+	                                            <option value="">Select One</option>
+	                                            <?php foreach ($accounts as $key=>$acc) { ?>
+	                                                <option value="<?php echo $acc->acc_id; ?>"><?php echo $acc->name; ?></option>
+	                                            <?php } ?>
+                                        	</select>
+										</label>
+									</section>
+
+									<section class="col col-2 sub_acc_wrap" style="display: none;">
+										<label for="sub_acc_id" class="control-label">Sub Account</label>
+									</section>
+									<section class="col col-4 sub_acc_wrap" style="display: none;">	
+										<label class="input">
+											<select name="sub_acc_id" id="sub_acc_id" tabindex="3" class="span5 select2">
+	                                            <option value="">Select One</option>
+                                        	</select>
+										</label>
+									</section>
+								</div>
+
+								<div class="row">
+									<section class="col col-2 sub_acc_wrap" style="display: none;">
+	                                    <label class="control-label" for="check_trans_no">Check / Trans. No</label>
+	                                </section>
+	                                <section class="col col-4 sub_acc_wrap" style="display: none;">
+	                                    <label class="input"> 
+	                                    	<input type="text" name="check_trans_no" value="" id="check_trans_no" class="span5" placeholder="Check or Transaction No">
+	                                    </label>
+	                                </section>
 								</div>
 							</fieldset>
 							<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
@@ -186,12 +273,46 @@
         nextText : '<i class="fa fa-chevron-right"></i>'
     }); 
 
+	$("#acc_id").change(function(){
+    	var acc_id = $(this).val();
+    	if (acc_id) {
+	    	$.ajax({
+					url : "<?php echo $this->config->item('base_url') ?>account/subacc_options/"+acc_id,
+					type : "get",
+					dataType : "json",
+					success : function(data) {
+						if (data.html && data.html != '') {
+							$("#sub_acc_id").html(data.html);
+							$("#sub_acc_id").select2("val", "");
+							$('.sub_acc_wrap').show();
+						} else {
+							$('.sub_acc_wrap').hide();
+						}
+					},
+					error: function(){
+						$.bigBox({
+							title : "Error!",
+							content : 'Sub account list fetching failed. Check your connection or contact with administrator.',
+							color : "#C46A69",
+							icon : "fa fa-warning shake animated",
+							number : "",
+							timeout : 6000
+						});
+					}
+				});
+    	} else {
+    		$("#sub_acc_id").html('<option value=""> Select One </option>');
+    		$("#sub_acc_id").select2("val", "");
+    		$('.sub_acc_wrap').hide();
+    	}
+    });
+
 	$('#amount').change(function(){
 		var paid = parseFloat($('#amount').val());
-		var due_amount = parseFloat($('#due_amount').val());
-		var new_due_amount = 0;
+		var due_amount = parseFloat($('#bill_due_amt').val());
+		var new_bill_due_amt = 0;
 
-		if (paid > due_amount) {
+		if (paid > bill_due_amt) {
 			$.bigBox({
 				title : "Validation Error!",
 				content : "Amount Paying can't be greater then Due Amount! ",

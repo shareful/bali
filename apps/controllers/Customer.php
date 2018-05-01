@@ -26,7 +26,7 @@ class Customer extends My_Controller {
 		
 		$data['title'] = $this->config->item('company_name');
 		$data['menu'] = 'list';
-		$data['customers'] = $this->customer->get_list_all();
+		$data['customers'] = $this->customer->get_list_all(true);
 		if(is_ajax()){
 			$this->load->view($this->config->item('admin_theme').'/customer/list', $data);
 			return;

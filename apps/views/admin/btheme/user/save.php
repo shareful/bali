@@ -67,6 +67,13 @@
 										<section class="col col-4">
 											<label class="select">
 												<select name="user_type" id="user_type" class="span5 chzn-select" data-placeholder="Select Status">
+													<?php
+													if ($this->session->userdata('user_type')=='sadmin') {
+													?>
+													<option value="sadmin" <?php if(count($user) > 0 && $user->user_type == 'sadmin') { echo 'selected'; }?>>Super Admin</option>
+													<?php
+													}
+													?>
 													<option value="admin" <?php if(count($user) > 0 && $user->user_type == 'admin') { echo 'selected'; }?>>Admin</option>
 													<option value="user" <?php if (count($user) > 0 && $user->user_type == 'user') { echo 'selected'; }?>>user</option>
 												</select> <i></i>
@@ -87,6 +94,40 @@
 											</label>
 										</section>												
 								</div>
+								<?php 
+								if ($this->session->userdata('user_type') == 'sadmin' AND ( (count($user) > 0 && $user->user_type != 'sadmin' ) OR count($user) == 0) ) {
+								?>
+								<div class="row" id="project_wrap">
+									<section class="col col-3">
+											<label class="label">Select Projects to grant access</label>
+									</section>
+									<section class="col col-9">
+										<div class="inline-group">
+											<?php
+											foreach ($projects as $project_id => $name) {
+												if (isset($user_project_ids)) {
+													if (in_array($project_id, $user_project_ids)) {
+														echo '<label class="checkbox">
+														<input type="checkbox" checked="checked" name="project[]" value="'.$project_id.'">
+														<i></i>'.$name.'</label>';
+													} else {
+														echo '<label class="checkbox">
+														<input type="checkbox" name="project[]" value="'.$project_id.'">
+														<i></i>'.$name.'</label>';
+													}
+												} else {
+													echo '<label class="checkbox">
+													<input type="checkbox" name="project[]" value="'.$project_id.'">
+													<i></i>'.$name.'</label>';
+												}
+											}
+											?>
+										</div>
+									</section>
+								</div>
+								<?php
+								}
+								?>
 							</fieldset>
                             <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>" />
                             <?php if (count($user) > 0) { ?>
@@ -114,6 +155,14 @@
 	
 	runAllForms();
 	
+	$('#user_type').change(function(){
+		if ($(this).val() == 'sadmin') {
+			$('#project_wrap').hide();
+		} else {
+			$('#project_wrap').show();
+		}
+	});
+
 	$("#save_changes").click(function(){
 		var $btn = $(this);
 	    $btn.val('loading');

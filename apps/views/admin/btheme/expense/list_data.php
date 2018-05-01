@@ -7,6 +7,7 @@
 											<th data-class="expand">Expense TYpe</th>
 											<th data-class="expand">Ref/Invoice #</th>
 											<th data-class="expand">Expense Date</th>
+											<th data-class="expand">Account</th>
 											<th data-class="expand">Notes</th>
 											<th style="text-align: center;">Action</th>
 										</tr>
@@ -27,6 +28,19 @@
 											<td><?php echo ucfirst($expense->exp_type); ?></td>
 											<td><?php echo $expense->ref_code; ?></td>
 											<td><?php echo date('m/d/Y', strtotime($expense->trans_date)); ?></td>
+											<td>
+												<?php 
+													
+													if (isset($expense->subaccount)) {
+														echo $expense->subaccount->name.' - '.$expense->subaccount->code;
+													} else {
+														echo $expense->account->name; 
+													}
+													if ($expense->check_trans_no) {
+														echo '<br>check/trans #'.$expense->check_trans_no;
+													}
+												?>
+											</td>
 											<td><?php echo $expense->notes; ?></td>
 											<td>
 											</td>

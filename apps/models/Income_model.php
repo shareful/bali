@@ -24,6 +24,14 @@ class Income_model extends My_Model {
 			'project'=>array(
 				'model'=>'project_model',
 				'primary_key'=>'project_id',
+			),
+			'account'=>array(
+				'model'=>'account_model',
+				'primary_key'=>'acc_id',
+			),
+			'subaccount'=>array(
+				'model'=>'subaccount_model',
+				'primary_key'=>'sub_acc_id',
 			)
 		);
 
@@ -47,6 +55,9 @@ class Income_model extends My_Model {
         array( 'field' => 'trans_date',
                'label' => 'Trasaction Date',
                'rules' => 'required' ),
+        array( 'field' => 'acc_id',
+               'label' => 'Account',
+               'rules' => 'required' ),
     );
 	
 	/**
@@ -68,6 +79,9 @@ class Income_model extends My_Model {
 		$this->field->ref_code = null;
 		$this->field->trans_date = null;
 		$this->field->notes = null;
+		$this->field->acc_id = null;
+		$this->field->sub_acc_id = null;
+		$this->field->check_trans_no = null;
 		$this->field->created = date('Y-m-d H:i:s', time());
 		$this->field->created_by = $this->session->userdata('user_id');		
 	}	
@@ -144,8 +158,7 @@ class Income_model extends My_Model {
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all(){
-		$where = array();
+	public function get_list_all($where = array()){
 		$where['company_id'] = $this->session->userdata('company_id');
 
 		if ($this->input->post('from_date')) {
@@ -159,7 +172,7 @@ class Income_model extends My_Model {
 		}
 
 		// $where['deleted'] = 0;
-		$result = parent::with('project')->order_by('code', 'desc')->get_many_by($where);
+		$result = parent::with('project')->with('account')->with('subaccount')->order_by('code', 'desc')->get_many_by($where);
 		return $result;
 	}
 
@@ -250,6 +263,42 @@ class Income_model extends My_Model {
 		}
 		
 		$this->db->where('company_id', $this->session->userdata('company_id'));
+		return $this->db->get($this->_table)->row()->total;
+	}
+
+	/**
+	 * Get total income by custom conditions 
+	 * @access public
+	 * @return double
+	 */
+	public function get_custom_total($where=array()){
+		
+		$this->db->select('SUM(amount) as total');
+
+		if ($this->input->post('item_id')) {
+			$this->db->where('item_id', $this->input->post('item_id'));
+		}
+		
+		if ($this->input->post('project_id')) {
+			$this->db->where('project_id', $this->input->post('project_id'));
+		}
+
+		if ($this->input->post('from_date')) {
+			$from_date = custom_standard_date(date_human_to_unix($this->input->post('from_date')), 'MYSQL');
+			$this->db->where('trans_date >=', $from_date);
+		}
+
+		if ($this->input->post('to_date')) {
+			$to_date = custom_standard_date(date_human_to_unix($this->input->post('to_date')), 'MYSQL');
+			$this->db->where('trans_date <=', $to_date);
+		}
+		
+		$this->db->where('company_id', $this->session->userdata('company_id'));
+
+		if (!empty($where)) {
+			$this->db->where($where);
+		}
+
 		return $this->db->get($this->_table)->row()->total;
 	}
 

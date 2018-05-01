@@ -59,7 +59,7 @@ class Project_model extends My_Model {
 		$this->field->name = null;
 		$this->field->address = null;
 		$this->field->notes = null;
-		$this->field->status = null;
+		$this->field->status = 'Active';
 		$this->field->deleted = 0;
 		$this->field->created = date('Y-m-d H:i:s', time());
 		$this->field->created_by = $this->session->userdata('user_id');
@@ -139,6 +139,22 @@ class Project_model extends My_Model {
 	public function get_option_list($where = array()){
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['deleted'] = 0;
+		$where['status'] = 'Active';
+
+		if ($this->session->userdata('user_type') != 'sadmin') {
+			$this->db->select('project_id');
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$result = $this->db->get('user_access_projects')->result();
+			$project_ids = array();
+			foreach($result as $row){
+				$project_ids[] = $row->project_id;
+			}
+			if (!empty($project_ids)) {
+				$where['project_id'] = $project_ids;
+			} else {
+				return array();
+			}
+		}
 		
 		if (!empty($where)) {
 			$this->db->where($where);
@@ -154,10 +170,28 @@ class Project_model extends My_Model {
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all(){
+	public function get_list_all($allstatus=false){
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['deleted'] = 0;
+		if (!$allstatus) {
+			$where['status'] = 'Active';
+		}
+		if ($this->session->userdata('user_type') != 'sadmin') {
+			$this->db->select('project_id');
+			$this->db->where('user_id', $this->session->userdata('user_id'));
+			$result = $this->db->get('user_access_projects')->result();
+			$project_ids = array();
+			foreach($result as $row){
+				$project_ids[] = $row->project_id;
+			}
+			if (!empty($project_ids)) {
+				$where['project_id'] = $project_ids;
+			} else {
+				return array();
+			}
+		}
+
 		$result = parent::order_by('name', 'asc')->get_many_by($where);
 		return $result;
 	}

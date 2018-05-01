@@ -138,6 +138,7 @@ class Item_model extends My_Model {
 	public function get_option_list($where = array()){
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['deleted'] = 0;
+		$where['status'] = 'Active';
 		
 		if (!empty($where)) {
 			$this->db->where($where);
@@ -153,10 +154,13 @@ class Item_model extends My_Model {
 	 * @access public
 	 * @return array
 	 */
-	public function get_list_all(){
+	public function get_list_all($allstatus=false){
 		$where = array();
 		$where['company_id'] = $this->session->userdata('company_id');
 		$where['deleted'] = 0;
+		if (!$allstatus) {
+			$where['status'] = 'Active';
+		}
 		$result = parent::order_by('name', 'asc')->get_many_by($where);
 		return $result;
 	}

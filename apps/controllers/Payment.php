@@ -29,6 +29,8 @@ class Payment extends My_Controller {
 		$this->load->model('project_model','project');		
 		$this->load->model('income_model','income');		
 		$this->load->model('expense_model','expense');		
+		$this->load->model('account_model','account');		
+		$this->load->model('subaccount_model','subaccount');	
 	}
 	
 	public function index($project_id, $item_id)
@@ -61,7 +63,25 @@ class Payment extends My_Controller {
 	 */
 	public function make($bill_id){
 		if($this->input->method(TRUE)=='POST'){
-			$this->form_validation->set_rules($this->purchasepayment->validate);
+			$rules = $this->purchasepayment->validate;
+			$rules[] = array( 
+				'field' => 'acc_id',
+               	'label' => 'Account',
+               	'rules' => 'required' 
+           	);
+
+           	if ($this->input->post('acc_id')) {
+           		$account = $this->account->get($this->input->post('acc_id'));
+           		if ($account->have_sub == 'Yes') {
+           			$rules[] = array( 
+						'field' => 'sub_acc_id',
+		               	'label' => 'Sub Account',
+		               	'rules' => 'required' 
+		           	);
+           		}
+           	}
+
+			$this->form_validation->set_rules($rules);
 
 			if ($this->form_validation->run()==FALSE) {
 				echo json_encode(array("error"=>$this->form_validation->error_String()));
@@ -75,6 +95,21 @@ class Payment extends My_Controller {
 				$bill = $this->purchase->get_one($bill_id);
 				if (empty($bill)) {
 					echo json_encode(array('success'=>'false','error'=>"Payment can't be created. Bill Not Found.")); exit;
+				}
+
+				// balance check
+				$sub_acc_balance = 0;
+				$acc_balance = 0;
+				if ($this->input->post('sub_acc_id')) {
+					$sub_acc_balance = $this->subaccount->get_balance($this->input->post('sub_acc_id'));
+					if ($this->input->post('amount') > $sub_acc_balance) {
+						echo json_encode(array('success'=>'false','error'=>'You don\'t have the sufficient balance to expense from the selected sub account.')); exit;
+					}
+				} else {
+					$acc_balance = $this->account->get_balance($this->input->post('acc_id'));
+					if ($this->input->post('amount') > $acc_balance) {
+						echo json_encode(array('success'=>'false','error'=>'You don\'t have the sufficient balance to expense from the selected account.')); exit;
+					}
 				}
 
 				$this->db->trans_start();
@@ -93,6 +128,9 @@ class Payment extends My_Controller {
 					$this->expense->set_value('project_id', $bill->project_id);
 					$this->expense->set_value('amount', $amount);
 					$this->expense->set_value('exp_type', 'purchase');
+					$this->expense->set_value('acc_id', $this->input->post('acc_id'));
+					$this->expense->set_value('sub_acc_id', $this->input->post('sub_acc_id'));
+					$this->expense->set_value('check_trans_no', $this->input->post('check_trans_no'));
 					$this->expense->set_value('notes', $this->input->post('notes'));
 					$this->expense->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('trans_date')), 'MYSQL') );
 					$this->expense->set_value('company_id', $this->session->userdata('company_id'));
@@ -114,7 +152,11 @@ class Payment extends My_Controller {
 			}
 		} else {
 			$data['bill'] = $this->purchase->get_one($bill_id);
-			
+			if (empty($data['bill'])) {
+				show_404();
+			}
+
+			$data['accounts'] = $this->account->get_list_all();
 			if(is_ajax()){
 	            $this->load->view($this->config->item('admin_theme').'/payment/make_payment', $data);
 	            return;
@@ -177,7 +219,25 @@ class Payment extends My_Controller {
 	 */
 	public function receive($bill_id){
 		if($this->input->method(TRUE)=='POST'){
-			$this->form_validation->set_rules($this->salepayment->validate);
+			$rules = $this->salepayment->validate;
+			$rules[] = array( 
+				'field' => 'acc_id',
+               	'label' => 'Account',
+               	'rules' => 'required' 
+           	);
+
+           	if ($this->input->post('acc_id')) {
+           		$account = $this->account->get($this->input->post('acc_id'));
+           		if ($account->have_sub == 'Yes') {
+           			$rules[] = array( 
+						'field' => 'sub_acc_id',
+		               	'label' => 'Sub Account',
+		               	'rules' => 'required' 
+		           	);
+           		}
+           	}
+
+			$this->form_validation->set_rules($rules);
 
 			if ($this->form_validation->run()==FALSE) {
 				echo json_encode(array("error"=>$this->form_validation->error_String()));
@@ -209,6 +269,9 @@ class Payment extends My_Controller {
 					$this->income->set_value('project_id', $bill->project_id);
 					$this->income->set_value('amount', $amount);
 					$this->income->set_value('income_type', 'sale');
+					$this->income->set_value('acc_id', $this->input->post('acc_id'));
+					$this->income->set_value('sub_acc_id', $this->input->post('sub_acc_id'));
+					$this->income->set_value('check_trans_no', $this->input->post('check_trans_no'));
 					$this->income->set_value('notes', $this->input->post('notes'));
 					$this->income->set_value('trans_date', custom_standard_date(date_human_to_unix($this->input->post('trans_date')), 'MYSQL') );
 					$this->income->set_value('company_id', $this->session->userdata('company_id'));
@@ -230,7 +293,12 @@ class Payment extends My_Controller {
 			}
 		} else {
 			$data['bill'] = $this->sale->get_one($bill_id);
-			
+			if (empty($data['bill'])) {
+				show_404();
+			}
+
+			$data['accounts'] = $this->account->get_list_all();
+
 			if(is_ajax()){
 	            $this->load->view($this->config->item('admin_theme').'/payment/receive_payment', $data);
 	            return;
